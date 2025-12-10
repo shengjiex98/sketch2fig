@@ -148,12 +148,13 @@ def write_html_report(result: RunResult) -> Path:
     # Summary section
     num_iters = len(result.iterations)
     final_sim = result.iterations[-1].similarity if result.iterations else None
+    final_sim_str = f"{final_sim:.4f}" if final_sim is not None else "N/A"
     html_parts.append(f"""
     <div class="summary">
         <h2>Summary</h2>
         <p><strong>Run directory:</strong> <code>{result.run_dir.name}</code></p>
         <p><strong>Number of iterations:</strong> {num_iters}</p>
-        <p><strong>Final similarity:</strong> {final_sim:.4f if final_sim else 'N/A'}</p>
+        <p><strong>Final similarity:</strong> {final_sim_str}</p>
     </div>
 """)
 
@@ -182,12 +183,13 @@ def write_html_report(result: RunResult) -> Path:
             .replace(">", "&gt;")
         )
 
+        iter_sim_str = f"{iteration.similarity:.4f}" if iteration.similarity is not None else "N/A"
         html_parts.append(f"""
     <div class="iteration">
         <h3>
             Iteration {iteration.step}
             <span class="similarity {sim_class}">
-                Similarity: {iteration.similarity:.4f if iteration.similarity else 'N/A'}
+                Similarity: {iter_sim_str}
             </span>
         </h3>
         <img src="{rendered_uri}" alt="Rendered iteration {iteration.step}">

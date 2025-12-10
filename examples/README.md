@@ -18,10 +18,10 @@ The more structured and clear the diagram, the better the TikZ conversion will b
 
 ```bash
 # Basic usage
-python -m cli.main examples/your_diagram.png
+optikz examples/your_diagram.png
 
 # With custom parameters
-python -m cli.main examples/your_diagram.png --iters 5 --threshold 0.95 --open-report
+optikz examples/your_diagram.png --iters 5 --threshold 0.95 --open-report
 ```
 
 ## Note

@@ -1,3 +1,3 @@
 """
-Tests for optikz-backend.
+Tests for optikz.
 """
