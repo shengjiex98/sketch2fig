@@ -67,11 +67,11 @@ source .venv/bin/activate  # On macOS/Linux
 # or
 .venv\Scripts\activate     # On Windows
 
-# Install dependencies
+# Install the package with dependencies
 uv pip install -e .
 
-# Or install from requirements.txt
-uv pip install -r requirements.txt
+# Install with development tools (optional)
+uv pip install -e ".[dev]"
 ```
 
 ### Using pip
@@ -81,14 +81,23 @@ uv pip install -r requirements.txt
 python3.11 -m venv .venv
 source .venv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Install the package in editable mode
+# Install the package with dependencies
 pip install -e .
+
+# Install with development tools (optional)
+pip install -e ".[dev]"
 ```
 
 ### Set OpenAI API Key
+
+Copy the example environment file and add your API key:
+
+```bash
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+```
+
+Or export it directly:
 
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
@@ -102,16 +111,19 @@ Add this to your `~/.bashrc`, `~/.zshrc`, or equivalent to make it permanent.
 
 ```bash
 # Basic usage (3 iterations, 0.9 threshold)
-python -m cli.main examples/your_diagram.png
+optikz-backend examples/your_diagram.png
+
+# Or using python -m
+python -m optikz_backend.cli.main examples/your_diagram.png
 
 # Custom parameters
-python -m cli.main examples/your_diagram.png --iters 5 --threshold 0.95
+optikz-backend examples/your_diagram.png --iters 5 --threshold 0.95
 
 # Specify output directory and open report
-python -m cli.main examples/your_diagram.png --work-root my_runs/ --open-report
+optikz-backend examples/your_diagram.png --work-root my_runs/ --open-report
 
 # Skip HTML report generation
-python -m cli.main examples/your_diagram.png --no-report
+optikz-backend examples/your_diagram.png --no-report
 ```
 
 **CLI Options:**
@@ -151,22 +163,26 @@ print(f"Report: {report_path}")
 ```
 optikz-backend/
 ├── pyproject.toml              # Project metadata and dependencies
-├── requirements.txt            # Dependency list for pip/uv
+├── LICENSE                     # MIT License
+├── .python-version             # Python version for pyenv/asdf
+├── .env.example                # Example environment variables
+├── .pre-commit-config.yaml     # Pre-commit hooks configuration
 ├── README.md                   # This file
-├── optikz_backend/            # Core library
-│   ├── __init__.py
-│   └── core/
+├── src/                        # Source code (src-layout)
+│   └── optikz_backend/        # Core library package
 │       ├── __init__.py
-│       ├── llm.py             # LLM integration (OpenAI)
-│       ├── render.py          # TikZ rendering and image comparison
-│       ├── pipeline.py        # Main iteration loop
-│       └── report.py          # HTML report generation
-├── cli/                       # Command-line interface
-│   ├── __init__.py
-│   └── main.py               # CLI entry point
-├── examples/                  # Example diagrams
+│       ├── core/              # Core pipeline modules
+│       │   ├── __init__.py
+│       │   ├── llm.py         # LLM integration (OpenAI)
+│       │   ├── render.py      # TikZ rendering and image comparison
+│       │   ├── pipeline.py    # Main iteration loop
+│       │   └── report.py      # HTML report generation
+│       └── cli/               # Command-line interface
+│           ├── __init__.py
+│           └── main.py        # CLI entry point
+├── examples/                   # Example diagrams
 │   └── README.md
-└── tests/                     # Tests
+└── tests/                      # Tests
     ├── __init__.py
     └── test_pipeline_smoke.py
 ```
@@ -208,7 +224,7 @@ pytest tests/ --cov=optikz_backend
 
 ## Swapping LLM Providers
 
-The LLM integration is encapsulated in [optikz_backend/core/llm.py](optikz_backend/core/llm.py). To use a different provider:
+The LLM integration is encapsulated in [src/optikz_backend/core/llm.py](src/optikz_backend/core/llm.py). To use a different provider:
 
 1. **Modify the client initialization** in `initial_tikz_from_llm()` and `refine_tikz_via_llm()`
 2. **Adjust the API call format** for your provider (e.g., Anthropic Claude, Azure OpenAI, local models)
@@ -249,7 +265,7 @@ The rest of the pipeline remains unchanged.
 
 ### LLM Model
 
-The default model is `gpt-4o`. To change it, edit `DEFAULT_MODEL` in [optikz_backend/core/llm.py](optikz_backend/core/llm.py:15):
+The default model is `gpt-4o`. To change it, edit `DEFAULT_MODEL` in [src/optikz_backend/core/llm.py:15](src/optikz_backend/core/llm.py#L15):
 
 ```python
 DEFAULT_MODEL = "gpt-4-turbo"  # or your preferred model
@@ -257,7 +273,7 @@ DEFAULT_MODEL = "gpt-4-turbo"  # or your preferred model
 
 ### TikZ Libraries
 
-The LaTeX preamble includes common TikZ libraries. To add more, edit the `latex_doc` template in [optikz_backend/core/render.py](optikz_backend/core/render.py:47):
+The LaTeX preamble includes common TikZ libraries. To add more, edit the `latex_doc` template in [src/optikz_backend/core/render.py](src/optikz_backend/core/render.py):
 
 ```latex
 \usetikzlibrary{shapes,arrows,positioning,calc,patterns,decorations.pathreplacing,graphs}
@@ -265,7 +281,7 @@ The LaTeX preamble includes common TikZ libraries. To add more, edit the `latex_
 
 ### Similarity Comparison
 
-The comparison resizes images to 512×512 before computing SSIM. To change this, edit [optikz_backend/core/render.py](optikz_backend/core/render.py:131):
+The comparison resizes images to 512×512 before computing SSIM. To change this, edit [src/optikz_backend/core/render.py](src/optikz_backend/core/render.py):
 
 ```python
 fixed_size = (1024, 1024)  # Higher resolution
@@ -274,7 +290,7 @@ fixed_size = (1024, 1024)  # Higher resolution
 ## Limitations and TODOs
 
 - **LaTeX errors**: If TikZ code is malformed, `pdflatex` will fail. Error handling could be improved to retry with corrections.
-- **Prompt tuning**: The prompts in [llm.py](optikz_backend/core/llm.py) are basic and can be refined for better results.
+- **Prompt tuning**: The prompts in [llm.py](src/optikz_backend/core/llm.py) are basic and can be refined for better results.
 - **Library detection**: The system doesn't automatically detect which TikZ libraries are needed.
 - **Cost control**: No token/cost tracking or limits on LLM calls.
 - **Async processing**: All operations are synchronous; could benefit from async LLM calls.
@@ -289,17 +305,23 @@ This is an initial architecture designed for clarity and extensibility. Contribu
 # Install dev dependencies
 uv pip install -e ".[dev]"
 
-# Run code formatters
+# Set up pre-commit hooks (recommended)
+pre-commit install
+
+# Run code formatters manually
 black .
 ruff check --fix .
 
 # Run type checker
-mypy optikz_backend/
+mypy src/
+
+# Run tests
+pytest
 ```
 
 ## License
 
-MIT License (or your chosen license)
+MIT License - see [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
