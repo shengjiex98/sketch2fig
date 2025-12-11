@@ -13,6 +13,8 @@ import sys
 import webbrowser
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from optikz.core import convert_with_iterations, write_html_report
 
 
@@ -24,7 +26,10 @@ def main() -> int:
         Exit code (0 for success, 1 for error)
     """
     parser = argparse.ArgumentParser(
-        description="Convert diagram images to TikZ code using vision LLMs with iterative refinement.",
+        description=(
+            "Convert diagram images to TikZ code using vision LLMs with iterative "
+            "refinement."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -33,6 +38,10 @@ Examples:
   %(prog)s diagram.png --work-root my_runs/ --open-report
         """,
     )
+
+    # Load environment variables early so API clients see them
+    load_dotenv(".env.local")
+    load_dotenv()
 
     parser.add_argument(
         "image",

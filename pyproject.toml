@@ -8,9 +8,7 @@ version = "0.1.0"
 description = "Convert diagram images to TikZ code using vision LLMs with iterative refinement"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [
-    { name = "Your Name", email = "your.email@example.com" }
-]
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -24,6 +22,7 @@ dependencies = [
     "pillow>=10.0.0",
     "numpy>=1.24.0",
     "scikit-image>=0.21.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -55,12 +54,7 @@ select = ["E", "F", "W", "I", "N", "UP"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = [
-    "-ra",
-    "--strict-markers",
-    "--strict-config",
-    "--showlocals",
-]
+addopts = ["-ra", "--strict-markers", "--strict-config", "--showlocals"]
 markers = [
     "integration: marks tests as integration tests (require LaTeX toolchain)",
 ]
@@ -68,10 +62,7 @@ markers = [
 [tool.coverage.run]
 source = ["optikz"]
 branch = true
-omit = [
-    "*/tests/*",
-    "*/__pycache__/*",
-]
+omit = ["*/tests/*", "*/__pycache__/*"]
 
 [tool.coverage.report]
 precision = 2
