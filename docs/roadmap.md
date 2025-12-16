@@ -46,33 +46,33 @@ Goal:
 ### 1.2 Iterative refinement loop
 
 - [ ] Implement `convert_with_iterations(...)` behavior as intended:
-  - [ ] Iteration 0: LLM generates initial TikZ from original image.
-  - [ ] For each step:
-    - [ ] Attempt to render.
-    - [ ] If render succeeds and similarity can be computed:
-      - [ ] Store similarity.
-      - [ ] Stop if `similarity >= similarity_threshold` or `step >= max_iters`.
+  - [x] Iteration 0: LLM generates initial TikZ from original image.
+  - [x] For each step:
+    - [x] Attempt to render.
+    - [x] If render succeeds and similarity can be computed:
+      - [x] Store similarity.
+      - [x] Stop if `similarity >= similarity_threshold` or `step >= max_iters`.
     - [ ] If render fails:
       - [ ] Use the latex log + current TikZ + original image as input to `refine_tikz_via_llm`.
-- [ ] Ensure `RunResult` includes:
-  - [ ] `final_tikz`
-  - [ ] `iterations: List[IterationResult]`
-  - [ ] `run_dir` path
+- [x] Ensure `RunResult` includes:
+  - [x] `final_tikz`
+  - [x] `iterations: List[IterationResult]`
+  - [x] `run_dir` path
 
   - _If stuck_:  
     - Ask AI: “Here is my current `convert_with_iterations` function. Refactor it to clearly separate: (1) single iteration step, (2) stopping logic, (3) error handling.”
 
 ### 1.3 Similarity metric
 
-- [ ] Implement `calc_similarity(target_img: Path, rendered_img: Path) -> float`:
-  - [ ] Load both images (Pillow / OpenCV).
-  - [ ] Convert to grayscale.
-  - [ ] Resize to fixed dimensions.
-  - [ ] Compute SSIM (preferred) or MSE.
-- [ ] Integrate similarity computation in the pipeline:
-  - [ ] Only compute if rendering succeeded.
-  - [ ] Store in `IterationResult.similarity`.
-  - [ ] Use for stopping condition in `convert_with_iterations`.
+- [x] Implement `calc_similarity(target_img: Path, rendered_img: Path) -> float`:
+  - [x] Load both images (Pillow / OpenCV).
+  - [x] Convert to grayscale.
+  - [x] Resize to fixed dimensions.
+  - [x] Compute SSIM (preferred) or MSE.
+- [x] Integrate similarity computation in the pipeline:
+  - [x] Only compute if rendering succeeded.
+  - [x] Store in `IterationResult.similarity`.
+  - [x] Use for stopping condition in `convert_with_iterations`.
 
   - _If stuck_:  
     - Ask AI: “Given these two image paths, write a simple `calc_similarity` using SSIM in Python with [Pillow + skimage] and return a float between 0 and 1.”
@@ -83,67 +83,67 @@ Goal:
 
 ### 2.1 Test setup
 
-- [ ] Add `pytest` to dev dependencies (via `uv` / `pyproject.toml`).
-- [ ] Create `tests/` structure:
-  - [ ] `tests/__init__.py`
-  - [ ] `tests/conftest.py`
-  - [ ] `tests/test_pipeline.py`
-  - [ ] `tests/test_render.py`
-  - [ ] `tests/test_report.py`
-  - [ ] `tests/test_cli.py`
+- [x] Add `pytest` to dev dependencies (via `uv` / `pyproject.toml`).
+- [x] Create `tests/` structure:
+  - [x] `tests/__init__.py`
+  - [x] `tests/conftest.py`
+  - [x] `tests/test_pipeline.py`
+  - [x] `tests/test_render.py`
+  - [x] `tests/test_report.py`
+  - [x] `tests/test_cli.py`
 
 ### 2.2 Pipeline tests (LLM/render mocked)
 
-- [ ] In `test_pipeline.py`:
-  - [ ] Use `monkeypatch` to stub:
+- [x] In `test_pipeline.py`:
+  - [x] Use `monkeypatch` to stub:
     - `initial_tikz_from_llm`
     - `refine_tikz_via_llm`
     - `render_tikz`
     - `calc_similarity`
-  - [ ] Test that `max_iters` is respected:
+  - [x] Test that `max_iters` is respected:
     - Low similarity → pipeline runs exactly `max_iters` steps.
-  - [ ] Test that `similarity_threshold` stops early when reached.
-  - [ ] Test that `work_root` is honored (run directory inside it).
+  - [x] Test that `similarity_threshold` stops early when reached.
+  - [x] Test that `work_root` is honored (run directory inside it).
 
   - _If stuck_:  
     - Ask AI: “Given this project tree and this pipeline function, write a pytest that monkeypatches LLM/render functions and asserts the number of iterations.”
 
 ### 2.3 Render tests
 
-- [ ] In `test_render.py`:
-  - [ ] Monkeypatch `subprocess.run` so that:
+- [x] In `test_render.py`:
+  - [x] Monkeypatch `subprocess.run` so that:
     - when called with `pdflatex`, it creates a fake PDF file.
     - when called with `magick`/`convert`/`ghostscript`, it creates a fake PNG file.
-  - [ ] Assert:
+  - [x] Assert:
     - `.tex` is written.
     - `.png` path is returned.
     - `subprocess.run` is called as expected.
-- [ ] Optional integration test:
-  - [ ] Mark with `@pytest.mark.integration`.
-  - [ ] Check if `pdflatex` is available before running.
-  - [ ] Actually compile a tiny TikZ snippet.
+- [x] Optional integration test:
+  - [x] Mark with `@pytest.mark.integration`.
+  - [x] Check if `pdflatex` is available before running.
+  - [x] Actually compile a tiny TikZ snippet.
 
 ### 2.4 Report tests
 
 - [ ] In `test_report.py`:
-  - [ ] Use a fake `RunResult` fixture with:
+  - [x] Use a fake `RunResult` fixture with:
     - 2–3 iterations,
     - dummy PNG files.
-  - [ ] Call `write_html_report`.
+  - [x] Call `write_html_report`.
   - [ ] Assert:
-    - Report file exists.
-    - Contains references to iteration PNG filenames.
-    - Contains the TikZ code.
+    - [x] Report file exists.
+    - [ ] Contains references to iteration PNG filenames.
+    - [x] Contains the TikZ code.
 
 ### 2.5 CLI tests
 
-- [ ] In `test_cli.py`:
-  - [ ] Monkeypatch `convert_with_iterations` to return a simple fake `RunResult`.
-  - [ ] Call the CLI (via `CliRunner` if click, or patch `sys.argv` if argparse).
-  - [ ] Assert:
-    - Exit code 0.
-    - STDOUT contains some expected text.
-    - No crash even when real pipeline is stubbed.
+- [x] In `test_cli.py`:
+  - [x] Monkeypatch `convert_with_iterations` to return a simple fake `RunResult`.
+  - [x] Call the CLI (via `CliRunner` if click, or patch `sys.argv` if argparse).
+  - [x] Assert:
+    - [x] Exit code 0.
+    - [x] STDOUT contains some expected text.
+    - [x] No crash even when real pipeline is stubbed.
 
 - [ ] Document how to run tests:
   - [ ] `uv run pytest`
@@ -162,11 +162,11 @@ Goal:
     - No non-TikZ LaTeX.
 - [ ] Tighten prompts for `refine_tikz_via_llm`:
   - [ ] Provide:
-    - Original image.
-    - Last rendered image (if any).
-    - Current TikZ.
+    - [x] Original image.
+    - [x] Last rendered image (if any).
+    - [x] Current TikZ.
     - LaTeX error snippet (if any).
-  - [ ] Ask for **corrected** TikZ only.
+  - [x] Ask for **corrected** TikZ only.
 
   - _If stuck_:  
     - Copy a failing case and ask AI:  
@@ -204,11 +204,11 @@ Goal:
 
 - [ ] Add basic layout:
   - [ ] Title with timestamp and input filename.
-  - [ ] Show original image at top.
+  - [x] Show original image at top.
   - [ ] For each iteration:
-    - [ ] Heading: “Iteration N (similarity: X.XX)”
-    - [ ] Rendered image.
-    - [ ] `<pre>` block with TikZ code.
+    - [x] Heading: “Iteration N (similarity: X.XX)”
+    - [x] Rendered image.
+    - [x] `<pre>` block with TikZ code.
 - [ ] Link to final TikZ file at the bottom (“Download final TikZ”).
 
 - _If stuck_:  
@@ -233,11 +233,11 @@ If this feels like too much for now, you can skip this and rely on the HTML repo
 ### 5.1 README & documentation
 
 - [ ] Update `README.md`:
-  - [ ] Project overview.
-  - [ ] Installation instructions (with `uv`).
-  - [ ] Basic usage:
+  - [x] Project overview.
+  - [x] Installation instructions (with `uv`).
+  - [x] Basic usage:
     - [ ] `optikz path/to/image.png --iters 2 --threshold 0.9`
-  - [ ] Architecture overview (1–2 diagrams or bullets).
+  - [x] Architecture overview (1–2 diagrams or bullets).
   - [ ] Testing instructions.
   - [ ] Limitations & future work.
 
