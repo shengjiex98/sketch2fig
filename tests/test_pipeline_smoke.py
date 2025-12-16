@@ -7,7 +7,7 @@ functionality works. They do NOT make actual LLM calls.
 
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -75,9 +75,7 @@ def test_run_result_dataclass():
     assert result.iterations[1].similarity == 0.92
 
 
-@pytest.mark.skipif(
-    True, reason="Requires OPENAI_API_KEY and makes actual API calls"
-)
+# @pytest.mark.skipif(True, reason="Requires OPENAI_API_KEY and makes actual API calls")
 def test_initial_tikz_from_llm_integration():
     """
     Integration test for initial_tikz_from_llm.
@@ -87,10 +85,10 @@ def test_initial_tikz_from_llm_integration():
     from optikz.core import initial_tikz_from_llm
 
     # This would require a real image and API key
-    # image_path = Path("examples/sample_diagram.png")
-    # tikz = initial_tikz_from_llm(image_path)
-    # assert isinstance(tikz, str)
-    # assert len(tikz) > 0
+    image_path = Path("examples/figure1.png")
+    tikz = initial_tikz_from_llm(image_path)
+    assert isinstance(tikz, str)
+    assert len(tikz) > 0
     pass
 
 
