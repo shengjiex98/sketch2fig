@@ -5,7 +5,7 @@ These tests verify that write_html_report creates a valid HTML file
 with the expected content structure.
 """
 
-from optikz.core.report import write_html_report
+from img2tikz.core.report import write_html_report
 
 
 def test_write_html_report_creates_file(fake_iteration_results):
@@ -150,7 +150,7 @@ def test_write_html_report_handles_special_html_characters(tmp_path):
     """
     from PIL import Image
 
-    from optikz.core.pipeline import IterationResult, RunResult
+    from img2tikz.core.pipeline import IterationResult, RunResult
 
     run_dir = tmp_path / "run_test"
     run_dir.mkdir()
@@ -227,7 +227,7 @@ def test_write_html_report_marks_compile_failures(tmp_path):
     """
     from PIL import Image
 
-    from optikz.core.pipeline import IterationResult, RunResult
+    from img2tikz.core.pipeline import IterationResult, RunResult
 
     run_dir = tmp_path / "run_compile_error"
     run_dir.mkdir()

@@ -81,7 +81,7 @@ cp .env.example .env
 
 ```bash
 # Ensure you're in the project directory
-cd optikz
+cd img2tikz
 
 # Reinstall with uv
 uv sync
@@ -91,7 +91,7 @@ source .venv/bin/activate
 pip install -e .
 
 # Verify installation
-python -c "import optikz; print(optikz.__version__)"
+python -c "import img2tikz; print(img2tikz.__version__)"
 ```
 
 ## Runtime Issues
@@ -115,7 +115,7 @@ cat runs/run_*/iter_*/diagram.log
 **Common causes:**
 
 1. **Missing TikZ libraries:** The generated code uses libraries not included in the preamble
-   - **Solution:** Add required libraries in [src/optikz/core/render.py](../src/optikz/core/render.py)
+   - **Solution:** Add required libraries in [src/img2tikz/core/render.py](../src/img2tikz/core/render.py)
 
 2. **Malformed TikZ syntax:** LLM generated invalid LaTeX
    - **Solution:** Increase `--iters` to allow refinement to fix it, or check iteration files to manually correct
@@ -144,17 +144,17 @@ Step 3: similarity = 0.62
 
 1. **Increase iterations:**
    ```bash
-   optikz diagram.png --iters 10
+   img2tikz diagram.png --iters 10
    ```
 
 2. **Lower similarity threshold:**
    ```bash
-   optikz diagram.png --threshold 0.7
+   img2tikz diagram.png --threshold 0.7
    ```
 
 3. **Check HTML report** to see visual differences:
    ```bash
-   optikz diagram.png --open-report
+   img2tikz diagram.png --open-report
    ```
 
 4. **Try with simpler diagrams first** to verify the pipeline works
@@ -203,10 +203,10 @@ Error during conversion: Invalid API key
    ```bash
    # Using ImageMagick
    convert input.png -resize 1024x1024 resized.png
-   optikz resized.png
+   img2tikz resized.png
    ```
 
-2. **Use lower comparison resolution** in [src/optikz/core/render.py](../src/optikz/core/render.py):
+2. **Use lower comparison resolution** in [src/img2tikz/core/render.py](../src/img2tikz/core/render.py):
    ```python
    fixed_size = (256, 256)  # Instead of (512, 512)
    ```
@@ -222,7 +222,7 @@ Error during conversion: Invalid API key
 1. **Check if generation was skipped:**
    ```bash
    # Don't use --no-report flag
-   optikz diagram.png
+   img2tikz diagram.png
    ```
 
 2. **Check run directory:**
@@ -244,7 +244,7 @@ Error during conversion: Invalid API key
 
 ```bash
 # Use a different output directory with write permissions
-optikz diagram.png --work-root ~/optikz_output
+img2tikz diagram.png --work-root ~/img2tikz_output
 
 # Or fix permissions
 chmod -R u+w ./runs
@@ -260,27 +260,27 @@ chmod -R u+w ./runs
 
 1. **Reduce iterations:**
    ```bash
-   optikz diagram.png --iters 2
+   img2tikz diagram.png --iters 2
    ```
 
 2. **Skip report generation:**
    ```bash
-   optikz diagram.png --no-report
+   img2tikz diagram.png --no-report
    ```
 
-3. **Use faster LLM model** (edit [src/optikz/core/llm.py](../src/optikz/core/llm.py)):
+3. **Use faster LLM model** (edit [src/img2tikz/core/llm.py](../src/img2tikz/core/llm.py)):
    ```python
    DEFAULT_MODEL = "gpt-4o-mini"  # Faster, cheaper
    ```
 
 ## Getting Help
 
-1. **Check existing issues:** https://github.com/yourusername/optikz/issues
+1. **Check existing issues:** https://github.com/yourusername/img2tikz/issues
 2. **Check the HTML report** to visualize what's happening
 3. **Inspect intermediate files** in `runs/run_*/` directory
 4. **Run with verbose output:**
    ```bash
-   optikz diagram.png -v  # If verbose mode is implemented
+   img2tikz diagram.png -v  # If verbose mode is implemented
    ```
 5. **Create a minimal reproducible example** and open an issue
 

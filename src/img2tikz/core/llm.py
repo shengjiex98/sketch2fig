@@ -12,7 +12,7 @@ from pathlib import Path
 from openai import OpenAI
 
 # TODO: Make model configurable via environment or config
-DEFAULT_MODEL = "gpt-4o"
+DEFAULT_MODEL = "gpt-5.1"
 
 
 def _encode_image(image_path: Path) -> str:
@@ -91,7 +91,7 @@ Output the TikZ code directly without additional explanation.
                 ],
             }
         ],
-        max_tokens=2000,
+        # max_tokens=2000,
         temperature=0.2,  # Lower temperature for more consistent output
     )
 
@@ -241,7 +241,7 @@ LaTeX compilation error excerpt:
     response = client.chat.completions.create(
         model=DEFAULT_MODEL,
         messages=[{"role": "user", "content": content}],
-        max_tokens=2000,
+        # max_tokens=2000,
         temperature=0.2,
     )
 

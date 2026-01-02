@@ -14,7 +14,7 @@ from unittest.mock import MagicMock
 import pytest
 from PIL import Image
 
-from optikz.core.render import (
+from img2tikz.core.render import (
     TikzCompilationError,
     calc_similarity,
     compile_tikz,

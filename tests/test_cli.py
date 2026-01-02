@@ -12,8 +12,8 @@ from pathlib import Path
 
 from PIL import Image
 
-from optikz.cli.main import main
-from optikz.core.pipeline import IterationResult, RunResult
+from img2tikz.cli.main import main
+from img2tikz.core.pipeline import IterationResult, RunResult
 
 
 def test_cli_basic_invocation(tmp_path: Path, monkeypatch, capsys):

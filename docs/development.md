@@ -42,7 +42,7 @@ uv run mypy src/
 uv run pytest tests/
 
 # Run with coverage
-uv run pytest tests/ --cov=optikz --cov-report=html
+uv run pytest tests/ --cov=img2tikz --cov-report=html
 
 # Run specific test file
 uv run pytest tests/test_pipeline_smoke.py
@@ -59,8 +59,8 @@ uv run pytest tests/ -v
 ## Project Structure
 
 ```
-optikz/
-├── src/optikz/              # Source code (src-layout)
+img2tikz/
+├── src/img2tikz/            # Source code (src-layout)
 │   ├── __init__.py
 │   ├── core/                # Core pipeline modules
 │   │   ├── __init__.py
@@ -185,7 +185,7 @@ All intermediate files are saved in `runs/run_*/`:
 ### Test individual components
 
 ```python
-from optikz.core import initial_tikz_from_llm, render_tikz
+from img2tikz.core import initial_tikz_from_llm, render_tikz
 from pathlib import Path
 
 # Test just LLM generation

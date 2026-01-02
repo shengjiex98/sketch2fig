@@ -1,10 +1,10 @@
-# optikz
+# img2tikz
 
 Convert diagram images to TikZ code using vision LLMs with iterative refinement.
 
 ## Overview
 
-**optikz** uses vision-capable LLMs (GPT-4 Vision/GPT-4o) to convert diagram images (PNG/JPEG) into TikZ LaTeX graphics code. The system iteratively refines the generated TikZ by comparing the rendered output with the original image until a similarity threshold is met.
+**img2tikz** uses vision-capable LLMs (GPT-4 Vision/GPT-4o) to convert diagram images (PNG/JPEG) into TikZ LaTeX graphics code. The system iteratively refines the generated TikZ by comparing the rendered output with the original image until a similarity threshold is met.
 
 ## Quick Start
 
@@ -30,7 +30,7 @@ sudo apt-get install texlive-latex-base texlive-latex-extra texlive-pictures gho
 
 ```bash
 # Clone the repository
-cd optikz
+cd img2tikz
 
 # Install with uv (recommended)
 uv sync
@@ -48,10 +48,10 @@ export OPENAI_API_KEY="sk-your-api-key-here"
 
 ```bash
 # Basic usage
-optikz examples/your_diagram.png
+img2tikz examples/your_diagram.png
 
 # With custom parameters
-optikz diagram.png --iters 5 --threshold 0.95 --open-report
+img2tikz diagram.png --iters 5 --threshold 0.95 --open-report
 ```
 
 **Options:**
@@ -65,7 +65,7 @@ optikz diagram.png --iters 5 --threshold 0.95 --open-report
 
 ```python
 from pathlib import Path
-from optikz.core import convert_with_iterations, write_html_report
+from img2tikz.core import convert_with_iterations, write_html_report
 
 result = convert_with_iterations(
     image_path=Path("diagram.png"),
@@ -111,8 +111,8 @@ runs/run_20250101_123456/
 ## Project Structure
 
 ```
-optikz/
-├── src/optikz/              # Main package
+img2tikz/
+├── src/img2tikz/            # Main package
 │   ├── core/                # Core pipeline modules
 │   │   ├── llm.py          # LLM integration
 │   │   ├── render.py       # TikZ rendering & comparison

@@ -110,11 +110,11 @@ def convert_with_iterations(
 
     # Iterative refinement loop
     tikz_version = 0
-    successful_iters = 0
+    display_step = 0
     attempt = 0
 
-    while successful_iters < max_iters:
-        print(f"\n[Attempt {attempt}] Rendering TikZ...")
+    while display_step < max_iters:
+        print(f"\n[Step {display_step}] Rendering TikZ...")
 
         # Create iteration subdirectory
         iter_dir = run_dir / f"iter_{attempt}"
@@ -125,7 +125,7 @@ def convert_with_iterations(
             rendered_path = render_tikz(current_tikz, iter_dir)
         except TikzCompilationError as compile_err:
             error_excerpt = compile_err.log_excerpt or str(compile_err)
-            print(f"Warning: Compilation failed at attempt {attempt}:\n{error_excerpt}")
+            print(f"Warning: LaTeX compilation failed at step {display_step}.")
             # Save the failed TikZ for inspection
             (iter_dir / "failed.tex").write_text(current_tikz)
             if error_excerpt:
@@ -142,7 +142,7 @@ def convert_with_iterations(
             )
 
             print(
-                f"[Attempt {attempt}] Refining TikZ via LLM to fix compilation issues..."
+                f"[Step {display_step}] Fixing compilation errors before retrying..."
             )
             try:
                 current_tikz = refine_tikz_via_llm(
@@ -160,15 +160,15 @@ def convert_with_iterations(
             attempt += 1
             continue
         except Exception as e:
-            print(f"Warning: Rendering failed at attempt {attempt}: {e}")
+            print(f"Warning: Rendering failed at step {display_step}: {e}")
             # Save the failed TikZ for inspection
             (iter_dir / "failed.tex").write_text(current_tikz)
             raise
 
         # Calculate similarity
-        print(f"[Attempt {attempt}] Calculating similarity...")
+        print(f"[Step {display_step}] Calculating similarity...")
         similarity = calc_similarity(image_path, rendered_path)
-        print(f"[Attempt {attempt}] Similarity: {similarity:.4f}")
+        print(f"[Step {display_step}] Similarity: {similarity:.4f}")
 
         # Record iteration result
         iterations.append(
@@ -180,12 +180,10 @@ def convert_with_iterations(
             )
         )
 
-        successful_iters += 1
+        attempt += 1
 
         # Check stopping conditions
         threshold_met = similarity >= similarity_threshold
-        max_reached = successful_iters >= max_iters
-        attempt += 1
 
         if threshold_met:
             print(
@@ -193,12 +191,12 @@ def convert_with_iterations(
             )
             break
 
-        if max_reached:
+        if display_step == max_iters - 1:
             print(f"\n✓ Max iterations ({max_iters}) reached.")
             break
 
         # Refine TikZ for next iteration
-        print(f"[Iteration {successful_iters - 1}] Refining TikZ via LLM...")
+        print(f"[Step {display_step}] Refining TikZ via LLM...")
         try:
             current_tikz = refine_tikz_via_llm(
                 original_image_path=image_path,
@@ -206,14 +204,13 @@ def convert_with_iterations(
                 current_tikz=current_tikz,
             )
         except Exception as e:
-            print(
-                f"Warning: Refinement failed at iteration {successful_iters - 1}: {e}"
-            )
+            print(f"Warning: Refinement failed at step {display_step}: {e}")
             raise
 
         # Save refined TikZ for next iteration
         tikz_version += 1
         (run_dir / f"iteration_{tikz_version}.tex").write_text(current_tikz)
+        display_step += 1
 
     # Save final TikZ
     final_tikz_path = run_dir / "final_tikz.tex"

@@ -2,7 +2,7 @@
 
 ## LLM Model Configuration
 
-The default model is `gpt-4o`. To change it, edit `DEFAULT_MODEL` in [src/optikz/core/llm.py](../src/optikz/core/llm.py#L15):
+The default model is `gpt-4o`. To change it, edit `DEFAULT_MODEL` in [src/img2tikz/core/llm.py](../src/img2tikz/core/llm.py#L15):
 
 ```python
 DEFAULT_MODEL = "gpt-4-turbo"  # or your preferred model
@@ -10,7 +10,7 @@ DEFAULT_MODEL = "gpt-4-turbo"  # or your preferred model
 
 ## Swapping LLM Providers
 
-The LLM integration is encapsulated in [src/optikz/core/llm.py](../src/optikz/core/llm.py). To use a different provider:
+The LLM integration is encapsulated in [src/img2tikz/core/llm.py](../src/img2tikz/core/llm.py). To use a different provider:
 
 1. **Modify the client initialization** in `initial_tikz_from_llm()` and `refine_tikz_via_llm()`
 2. **Adjust the API call format** for your provider
@@ -49,7 +49,7 @@ The rest of the pipeline remains unchanged.
 
 ## TikZ Libraries
 
-The LaTeX preamble includes common TikZ libraries. To add more, edit the `latex_doc` template in [src/optikz/core/render.py](../src/optikz/core/render.py):
+The LaTeX preamble includes common TikZ libraries. To add more, edit the `latex_doc` template in [src/img2tikz/core/render.py](../src/img2tikz/core/render.py):
 
 ```latex
 \usetikzlibrary{shapes,arrows,positioning,calc,patterns,decorations.pathreplacing,graphs}
@@ -59,7 +59,7 @@ Add any additional libraries you need to this list.
 
 ## Image Similarity Configuration
 
-The comparison resizes images to 512×512 before computing SSIM. To change this, edit [src/optikz/core/render.py](../src/optikz/core/render.py):
+The comparison resizes images to 512×512 before computing SSIM. To change this, edit [src/img2tikz/core/render.py](../src/img2tikz/core/render.py):
 
 ```python
 fixed_size = (1024, 1024)  # Higher resolution for more precise comparison
@@ -71,7 +71,7 @@ fixed_size = (1024, 1024)  # Higher resolution for more precise comparison
 
 ## Prompt Customization
 
-Prompts are defined in [src/optikz/core/llm.py](../src/optikz/core/llm.py):
+Prompts are defined in [src/img2tikz/core/llm.py](../src/img2tikz/core/llm.py):
 
 - `initial_tikz_from_llm()`: Initial generation prompt
 - `refine_tikz_via_llm()`: Refinement prompt with visual feedback
@@ -102,7 +102,7 @@ export OPENAI_API_KEY="sk-your-api-key-here"
 
 ```python
 from pathlib import Path
-from optikz.core import convert_with_iterations
+from img2tikz.core import convert_with_iterations
 
 result = convert_with_iterations(
     image_path=Path("diagram.png"),
@@ -114,7 +114,7 @@ result = convert_with_iterations(
 
 ```python
 # Fine-grained control over iterations
-from optikz.core import initial_tikz_from_llm, render_tikz, calc_similarity, refine_tikz_via_llm
+from img2tikz.core import initial_tikz_from_llm, render_tikz, calc_similarity, refine_tikz_via_llm
 
 # Generate initial TikZ
 tikz = initial_tikz_from_llm(image_path)

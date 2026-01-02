@@ -18,10 +18,10 @@ The more structured and clear the diagram, the better the TikZ conversion will b
 
 ```bash
 # Basic usage
-optikz examples/your_diagram.png
+img2tikz examples/your_diagram.png
 
 # With custom parameters
-optikz examples/your_diagram.png --iters 5 --threshold 0.95 --open-report
+img2tikz examples/your_diagram.png --iters 5 --threshold 0.95 --open-report
 ```
 
 ## Note

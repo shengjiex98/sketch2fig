@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "optikz"
+name = "img2tikz"
 version = "0.1.0"
 description = "Convert diagram images to TikZ code using vision LLMs with iterative refinement"
 readme = "README.md"
@@ -36,11 +36,11 @@ dev = [
 ]
 
 [project.scripts]
-optikz = "optikz.cli.main:main"
+img2tikz = "img2tikz.cli.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["optikz*"]
+include = ["img2tikz*"]
 
 [tool.black]
 line-length = 88
@@ -62,7 +62,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["optikz"]
+source = ["img2tikz"]
 branch = true
 omit = ["*/tests/*", "*/__pycache__/*"]
 

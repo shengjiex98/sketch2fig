@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures for optikz tests.
+Shared pytest fixtures for img2tikz tests.
 
 Provides reusable test fixtures for creating dummy images, fake results,
 and other test utilities.
@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from optikz.core.pipeline import IterationResult, RunResult
+from img2tikz.core.pipeline import IterationResult, RunResult
 
 
 @pytest.fixture

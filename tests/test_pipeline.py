@@ -10,8 +10,8 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from optikz.core.pipeline import convert_with_iterations
-from optikz.core.render import TikzCompilationError
+from img2tikz.core.pipeline import convert_with_iterations
+from img2tikz.core.render import TikzCompilationError
 
 
 def test_pipeline_stops_at_max_iters(tmp_path: Path, monkeypatch):

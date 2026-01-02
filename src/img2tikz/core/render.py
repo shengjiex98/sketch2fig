@@ -9,6 +9,7 @@ Handles:
 
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -163,54 +164,56 @@ def render_tikz(tikz: str, out_dir: Path) -> Path:
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    success, log_excerpt = compile_tikz(tikz, out_dir)
-    if not success:
-        raise TikzCompilationError(
-            "pdflatex compilation failed. See latex_error.txt for details.",
-            log_excerpt=log_excerpt,
-        )
+    with tempfile.TemporaryDirectory() as tmpdir:
+        build_dir = Path(tmpdir)
+        success, log_excerpt = compile_tikz(tikz, build_dir)
+        if not success:
+            raise TikzCompilationError(
+                "pdflatex compilation failed. See latex_error.txt for details.",
+                log_excerpt=log_excerpt,
+            )
 
-    pdf_file = out_dir / "diagram.pdf"
-    if not pdf_file.exists():
-        raise TikzCompilationError(
-            "pdflatex reported success but did not produce diagram.pdf."
-        )
+        pdf_file = build_dir / "diagram.pdf"
+        if not pdf_file.exists():
+            raise TikzCompilationError(
+                "pdflatex reported success but did not produce diagram.pdf."
+            )
 
-    png_file = out_dir / "rendered.png"
+        png_file = out_dir / "rendered.png"
 
-    # Ensure Ghostscript is available right before conversion
-    if not shutil.which("gs"):
-        raise FileNotFoundError(
-            "gs (Ghostscript) not found. Install via: brew install ghostscript"
-        )
+        # Ensure Ghostscript is available right before conversion
+        if not shutil.which("gs"):
+            raise FileNotFoundError(
+                "gs (Ghostscript) not found. Install via: brew install ghostscript"
+            )
 
-    try:
-        subprocess.run(
-            [
-                "gs",
-                "-dSAFER",
-                "-dBATCH",
-                "-dNOPAUSE",
-                "-sDEVICE=png16m",
-                "-r300",  # 300 DPI
-                "-dTextAlphaBits=4",
-                "-dGraphicsAlphaBits=4",
-                f"-sOutputFile={png_file}",
-                str(pdf_file),
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(
-            f"Ghostscript conversion failed:\n{e.stderr}\n{e.stdout}"
-        ) from e
+        try:
+            subprocess.run(
+                [
+                    "gs",
+                    "-dSAFER",
+                    "-dBATCH",
+                    "-dNOPAUSE",
+                    "-sDEVICE=png16m",
+                    "-r300",  # 300 DPI
+                    "-dTextAlphaBits=4",
+                    "-dGraphicsAlphaBits=4",
+                    f"-sOutputFile={png_file}",
+                    str(pdf_file),
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(
+                f"Ghostscript conversion failed:\n{e.stderr}\n{e.stdout}"
+            ) from e
 
-    if not png_file.exists():
-        raise RuntimeError("Ghostscript did not produce PNG output")
+        if not png_file.exists():
+            raise RuntimeError("Ghostscript did not produce PNG output")
 
-    return png_file
+        return png_file
 
 
 def calc_similarity(target_img: Path, rendered_img: Path) -> float:

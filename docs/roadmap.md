@@ -1,4 +1,4 @@
-# optikz Roadmap
+# img2tikz Roadmap
 
 Goal:
 
@@ -10,10 +10,10 @@ Goal:
 
 ## Milestone 0 – Current status (done ✅)
 
-- [x] Initialize `optikz` repo with `uv` and Python 3.11+.
-- [x] Set up package structure (`optikz_backend/`, `cli/`, etc.).
-- [x] Implement basic CLI command:  
-  - `optikz /path/to/image`
+- [x] Initialize `img2tikz` repo with `uv` and Python 3.11+.
+- [x] Set up package structure (`img2tikz_backend/`, `cli/`, etc.).
+- [x] Implement basic CLI command:
+  - `img2tikz /path/to/image`
 - [x] Implement initial LLM integration:
   - Takes an image, calls an image-capable model.
   - Returns TikZ code as output.
@@ -236,7 +236,7 @@ If this feels like too much for now, you can skip this and rely on the HTML repo
   - [x] Project overview.
   - [x] Installation instructions (with `uv`).
   - [x] Basic usage:
-    - [ ] `optikz path/to/image.png --iters 2 --threshold 0.9`
+    - [ ] `img2tikz path/to/image.png --iters 2 --threshold 0.9`
   - [x] Architecture overview (1–2 diagrams or bullets).
   - [ ] Testing instructions.
   - [ ] Limitations & future work.

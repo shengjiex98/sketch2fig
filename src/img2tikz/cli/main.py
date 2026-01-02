@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Command-line interface for optikz.
+Command-line interface for img2tikz.
 
 Usage:
-    optikz input.png
-    optikz input.png --iters 5 --threshold 0.95
-    optikz input.png --work-root my_runs/ --open-report
+    img2tikz input.png
+    img2tikz input.png --iters 5 --threshold 0.95
+    img2tikz input.png --work-root my_runs/ --open-report
 """
 
 import argparse
@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from optikz.core import convert_with_iterations, write_html_report
+from img2tikz.core import convert_with_iterations, write_html_report
 
 
 def main() -> int:
@@ -99,7 +99,7 @@ Examples:
 
     # Run the pipeline
     print("=" * 60)
-    print("optikz: Image → TikZ conversion with refinement")
+    print("img2tikz: Image → TikZ conversion with refinement")
     print("=" * 60)
 
     try:

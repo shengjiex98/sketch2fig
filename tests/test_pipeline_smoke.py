@@ -11,12 +11,12 @@ from unittest.mock import patch
 
 import pytest
 
-from optikz.core import IterationResult, RunResult
+from img2tikz.core import IterationResult, RunResult
 
 
 def test_imports():
     """Test that all core modules can be imported."""
-    from optikz.core import (
+    from img2tikz.core import (
         calc_similarity,
         convert_with_iterations,
         initial_tikz_from_llm,
@@ -82,7 +82,7 @@ def test_initial_tikz_from_llm_integration():
 
     Skipped by default. Remove skipif to test with real API.
     """
-    from optikz.core import initial_tikz_from_llm
+    from img2tikz.core import initial_tikz_from_llm
 
     # This would require a real image and API key
     image_path = Path("examples/figure1.png")
@@ -94,7 +94,7 @@ def test_initial_tikz_from_llm_integration():
 
 def test_render_tikz_requires_latex():
     """Test that render_tikz checks for required tools."""
-    from optikz.core import render_tikz
+    from img2tikz.core import render_tikz
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmppath = Path(tmpdir)
@@ -107,7 +107,7 @@ def test_render_tikz_requires_latex():
 
 def test_calc_similarity_validates_paths():
     """Test that calc_similarity validates input paths."""
-    from optikz.core import calc_similarity
+    from img2tikz.core import calc_similarity
 
     with pytest.raises(FileNotFoundError):
         calc_similarity(Path("/nonexistent1.png"), Path("/nonexistent2.png"))
@@ -115,7 +115,7 @@ def test_calc_similarity_validates_paths():
 
 def test_write_html_report_structure():
     """Test basic HTML report generation structure."""
-    from optikz.core import write_html_report
+    from img2tikz.core import write_html_report
 
     with tempfile.TemporaryDirectory() as tmpdir:
         run_dir = Path(tmpdir)
