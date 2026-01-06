@@ -56,7 +56,7 @@ def test_cli_basic_invocation(tmp_path: Path, monkeypatch, capsys):
     def mock_convert(image_path, max_iters, similarity_threshold, work_root):
         return fake_result
 
-    monkeypatch.setattr("optikz.cli.main.convert_with_iterations", mock_convert)
+    monkeypatch.setattr("img2tikz.cli.main.convert_with_iterations", mock_convert)
 
     # Mock write_html_report to return a path
     def mock_report(result):
@@ -64,10 +64,10 @@ def test_cli_basic_invocation(tmp_path: Path, monkeypatch, capsys):
         report_path.write_text("<html></html>")
         return report_path
 
-    monkeypatch.setattr("optikz.cli.main.write_html_report", mock_report)
+    monkeypatch.setattr("img2tikz.cli.main.write_html_report", mock_report)
 
     # Set up sys.argv
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img)])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img)])
 
     # Run the CLI
     exit_code = main()
@@ -77,7 +77,7 @@ def test_cli_basic_invocation(tmp_path: Path, monkeypatch, capsys):
 
     # Check output contains expected messages
     captured = capsys.readouterr()
-    assert "optikz" in captured.out.lower()
+    assert "img2tikz" in captured.out.lower()
     assert "conversion complete" in captured.out.lower()
 
 
@@ -122,9 +122,9 @@ def test_cli_with_custom_parameters(tmp_path: Path, monkeypatch):
             run_dir=run_dir,
         )
 
-    monkeypatch.setattr("optikz.cli.main.convert_with_iterations", mock_convert)
+    monkeypatch.setattr("img2tikz.cli.main.convert_with_iterations", mock_convert)
     monkeypatch.setattr(
-        "optikz.cli.main.write_html_report",
+        "img2tikz.cli.main.write_html_report",
         lambda r: r.run_dir / "report.html",
     )
 
@@ -135,7 +135,7 @@ def test_cli_with_custom_parameters(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(
         "sys.argv",
         [
-            "optikz",
+            "img2tikz",
             str(input_img),
             "--iters",
             "5",
@@ -163,7 +163,7 @@ def test_cli_missing_image_error(tmp_path: Path, monkeypatch, capsys):
     """
     non_existent = tmp_path / "does_not_exist.png"
 
-    monkeypatch.setattr("sys.argv", ["optikz", str(non_existent)])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(non_existent)])
 
     exit_code = main()
 
@@ -184,7 +184,7 @@ def test_cli_invalid_iters_parameter(tmp_path: Path, monkeypatch, capsys):
     img.save(input_img)
 
     # Try with invalid --iters value
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img), "--iters", "0"])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img), "--iters", "0"])
 
     exit_code = main()
 
@@ -204,7 +204,7 @@ def test_cli_invalid_threshold_parameter(tmp_path: Path, monkeypatch, capsys):
     img.save(input_img)
 
     # Try with threshold > 1.0
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img), "--threshold", "1.5"])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img), "--threshold", "1.5"])
 
     exit_code = main()
 
@@ -214,7 +214,7 @@ def test_cli_invalid_threshold_parameter(tmp_path: Path, monkeypatch, capsys):
     assert "--threshold must be in [0, 1]" in captured.err
 
     # Try with threshold < 0.0
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img), "--threshold", "-0.5"])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img), "--threshold", "-0.5"])
 
     exit_code = main()
 
@@ -260,11 +260,11 @@ def test_cli_no_report_flag(tmp_path: Path, monkeypatch):
         report_called["called"] = True
         return result.run_dir / "report.html"
 
-    monkeypatch.setattr("optikz.cli.main.convert_with_iterations", mock_convert)
-    monkeypatch.setattr("optikz.cli.main.write_html_report", mock_report)
+    monkeypatch.setattr("img2tikz.cli.main.convert_with_iterations", mock_convert)
+    monkeypatch.setattr("img2tikz.cli.main.write_html_report", mock_report)
 
     # Run with --no-report
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img), "--no-report"])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img), "--no-report"])
 
     exit_code = main()
 
@@ -288,10 +288,10 @@ def test_cli_handles_pipeline_exception(tmp_path: Path, monkeypatch, capsys):
         raise RuntimeError("Simulated pipeline failure")
 
     monkeypatch.setattr(
-        "optikz.cli.main.convert_with_iterations", mock_convert_with_error
+        "img2tikz.cli.main.convert_with_iterations", mock_convert_with_error
     )
 
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img)])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img)])
 
     exit_code = main()
 
@@ -336,13 +336,13 @@ def test_cli_prints_iteration_summary(tmp_path: Path, monkeypatch, capsys):
     def mock_convert(image_path, max_iters, similarity_threshold, work_root):
         return RunResult(final_tikz="\\draw 2;", iterations=iterations, run_dir=run_dir)
 
-    monkeypatch.setattr("optikz.cli.main.convert_with_iterations", mock_convert)
+    monkeypatch.setattr("img2tikz.cli.main.convert_with_iterations", mock_convert)
     monkeypatch.setattr(
-        "optikz.cli.main.write_html_report",
+        "img2tikz.cli.main.write_html_report",
         lambda r: r.run_dir / "report.html",
     )
 
-    monkeypatch.setattr("sys.argv", ["optikz", str(input_img)])
+    monkeypatch.setattr("sys.argv", ["img2tikz", str(input_img)])
 
     exit_code = main()
 

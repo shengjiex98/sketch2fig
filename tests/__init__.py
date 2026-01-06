@@ -1,3 +1,3 @@
 """
-Tests for optikz.
+Tests for img2tikz.
 """

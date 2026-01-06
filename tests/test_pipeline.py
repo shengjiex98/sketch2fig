@@ -56,10 +56,12 @@ def test_pipeline_stops_at_max_iters(tmp_path: Path, monkeypatch):
         return current_tikz + f"\n% refined {call_counts['refine']}"
 
     # Apply monkeypatches
-    monkeypatch.setattr("optikz.core.pipeline.initial_tikz_from_llm", mock_initial_tikz)
-    monkeypatch.setattr("optikz.core.pipeline.render_tikz", mock_render_tikz)
-    monkeypatch.setattr("optikz.core.pipeline.calc_similarity", mock_calc_similarity)
-    monkeypatch.setattr("optikz.core.pipeline.refine_tikz_via_llm", mock_refine_tikz)
+    monkeypatch.setattr(
+        "img2tikz.core.pipeline.initial_tikz_from_llm", mock_initial_tikz
+    )
+    monkeypatch.setattr("img2tikz.core.pipeline.render_tikz", mock_render_tikz)
+    monkeypatch.setattr("img2tikz.core.pipeline.calc_similarity", mock_calc_similarity)
+    monkeypatch.setattr("img2tikz.core.pipeline.refine_tikz_via_llm", mock_refine_tikz)
 
     # Run the pipeline with max_iters=3
     work_root = tmp_path / "runs"
@@ -137,10 +139,12 @@ def test_pipeline_stops_early_due_to_threshold(tmp_path: Path, monkeypatch):
         return current_tikz + f"\n% refined {call_counts['refine']}"
 
     # Apply monkeypatches
-    monkeypatch.setattr("optikz.core.pipeline.initial_tikz_from_llm", mock_initial_tikz)
-    monkeypatch.setattr("optikz.core.pipeline.render_tikz", mock_render_tikz)
-    monkeypatch.setattr("optikz.core.pipeline.calc_similarity", mock_calc_similarity)
-    monkeypatch.setattr("optikz.core.pipeline.refine_tikz_via_llm", mock_refine_tikz)
+    monkeypatch.setattr(
+        "img2tikz.core.pipeline.initial_tikz_from_llm", mock_initial_tikz
+    )
+    monkeypatch.setattr("img2tikz.core.pipeline.render_tikz", mock_render_tikz)
+    monkeypatch.setattr("img2tikz.core.pipeline.calc_similarity", mock_calc_similarity)
+    monkeypatch.setattr("img2tikz.core.pipeline.refine_tikz_via_llm", mock_refine_tikz)
 
     # Run with max_iters=5 but threshold should stop it at 2
     result = convert_with_iterations(
@@ -175,7 +179,7 @@ def test_pipeline_uses_custom_work_root(tmp_path: Path, monkeypatch):
 
     # Mock all dependencies with minimal implementations
     monkeypatch.setattr(
-        "optikz.core.pipeline.initial_tikz_from_llm",
+        "img2tikz.core.pipeline.initial_tikz_from_llm",
         lambda img: "\\draw (0,0) -- (1,1);",
     )
 
@@ -185,9 +189,9 @@ def test_pipeline_uses_custom_work_root(tmp_path: Path, monkeypatch):
         img.save(rendered)
         return rendered
 
-    monkeypatch.setattr("optikz.core.pipeline.render_tikz", mock_render)
+    monkeypatch.setattr("img2tikz.core.pipeline.render_tikz", mock_render)
     monkeypatch.setattr(
-        "optikz.core.pipeline.calc_similarity", lambda t, r: 0.95
+        "img2tikz.core.pipeline.calc_similarity", lambda t, r: 0.95
     )  # Meet threshold immediately
 
     # Use a custom work_root
@@ -222,7 +226,7 @@ def test_pipeline_creates_all_expected_files(tmp_path: Path, monkeypatch):
 
     # Mock dependencies
     monkeypatch.setattr(
-        "optikz.core.pipeline.initial_tikz_from_llm",
+        "img2tikz.core.pipeline.initial_tikz_from_llm",
         lambda img: "\\draw (0,0) circle (1);",
     )
 
@@ -232,15 +236,15 @@ def test_pipeline_creates_all_expected_files(tmp_path: Path, monkeypatch):
         img.save(rendered)
         return rendered
 
-    monkeypatch.setattr("optikz.core.pipeline.render_tikz", mock_render)
+    monkeypatch.setattr("img2tikz.core.pipeline.render_tikz", mock_render)
     monkeypatch.setattr(
-        "optikz.core.pipeline.calc_similarity", lambda t, r: 0.4
+        "img2tikz.core.pipeline.calc_similarity", lambda t, r: 0.4
     )  # Low similarity, go to max_iters
 
     def mock_refine(original_image_path, rendered_image_path, current_tikz):
         return current_tikz + "\n% refined"
 
-    monkeypatch.setattr("optikz.core.pipeline.refine_tikz_via_llm", mock_refine)
+    monkeypatch.setattr("img2tikz.core.pipeline.refine_tikz_via_llm", mock_refine)
 
     # Run pipeline with 2 iterations
     result = convert_with_iterations(
@@ -286,7 +290,7 @@ def test_pipeline_retries_when_compilation_fails(tmp_path: Path, monkeypatch):
     img.save(input_img)
 
     monkeypatch.setattr(
-        "optikz.core.pipeline.initial_tikz_from_llm",
+        "img2tikz.core.pipeline.initial_tikz_from_llm",
         lambda img: "\\draw (0,0) -- (1,1);",
     )
 
@@ -312,9 +316,9 @@ def test_pipeline_retries_when_compilation_fails(tmp_path: Path, monkeypatch):
         state["last_error"] = latex_error
         return current_tikz + "\n% fixed compile"
 
-    monkeypatch.setattr("optikz.core.pipeline.render_tikz", mock_render)
-    monkeypatch.setattr("optikz.core.pipeline.calc_similarity", lambda t, r: 0.95)
-    monkeypatch.setattr("optikz.core.pipeline.refine_tikz_via_llm", mock_refine)
+    monkeypatch.setattr("img2tikz.core.pipeline.render_tikz", mock_render)
+    monkeypatch.setattr("img2tikz.core.pipeline.calc_similarity", lambda t, r: 0.95)
+    monkeypatch.setattr("img2tikz.core.pipeline.refine_tikz_via_llm", mock_refine)
 
     result = convert_with_iterations(
         image_path=input_img,

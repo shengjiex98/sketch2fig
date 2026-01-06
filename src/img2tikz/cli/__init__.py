@@ -1,3 +1,3 @@
 """
-CLI interface for optikz.
+CLI interface for img2tikz.
 """
