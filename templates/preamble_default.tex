@@ -1,0 +1,78 @@
+% sketch2fig default preamble
+% Clean, publication-quality style inspired by Distill/modern ML papers
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+
+\usetikzlibrary{
+    calc,
+    positioning,
+    arrows.meta,
+    shapes.geometric,
+    shapes.misc,
+    backgrounds,
+    fit,
+    decorations.pathmorphing,
+    patterns,
+    math,
+}
+
+% ── Color palette (blue-gray, professional) ──────────────────
+\definecolor{s2f-blue}{HTML}{4A90D9}
+\definecolor{s2f-darkblue}{HTML}{2C5F8A}
+\definecolor{s2f-lightblue}{HTML}{D6E8F7}
+\definecolor{s2f-gray}{HTML}{6B7B8D}
+\definecolor{s2f-lightgray}{HTML}{F0F2F5}
+\definecolor{s2f-red}{HTML}{D94A4A}
+\definecolor{s2f-green}{HTML}{4AAD6B}
+\definecolor{s2f-orange}{HTML}{E8943A}
+\definecolor{s2f-text}{HTML}{2C3E50}
+
+% ── Base styles ──────────────────────────────────────────────
+\tikzset{
+    % Text defaults
+    every node/.append style={
+        font=\sffamily\footnotesize,
+        text=s2f-text,
+    },
+    % Standard block
+    s2f-block/.style={
+        draw=s2f-blue,
+        fill=s2f-lightblue,
+        rounded corners=3pt,
+        minimum width=2.5cm,
+        minimum height=1.5cm,
+        thick,
+        align=center,
+    },
+    % Emphasized block
+    s2f-block-accent/.style={
+        s2f-block,
+        fill=s2f-blue!20,
+        draw=s2f-darkblue,
+    },
+    % Arrow style
+    s2f-arrow/.style={
+        ->,
+        >=Stealth,
+        thick,
+        draw=s2f-gray,
+    },
+    % Dashed arrow
+    s2f-arrow-dashed/.style={
+        s2f-arrow,
+        dashed,
+    },
+    % Label style
+    s2f-label/.style={
+        font=\sffamily\scriptsize,
+        text=s2f-gray,
+    },
+    % Annotation (callout text)
+    s2f-annotation/.style={
+        font=\sffamily\scriptsize,
+        text=s2f-darkblue,
+    },
+}
