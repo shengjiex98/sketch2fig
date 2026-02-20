@@ -1,0 +1,153 @@
+\begin{tikzpicture}[
+    every node/.append style={
+        align = center,
+        font=\sffamily\footnotesize,
+        outer sep=0pt,
+        inner sep=0pt
+    },
+    node0/.append style={lblue, fgray},
+    line0/.append style={lblue, thick},
+    line1/.append style={lblue, thick, dashed},
+    block/.append style={
+        line0, minimum width=2.7cm, minimum height=1.7cm, rounded corners=2pt
+    },
+    label/.append style={
+        font=\sffamily\footnotesize\color{blue!70!black}, outer sep=2pt, inner sep=2pt
+    }
+]
+\tikzmath{\step=0.4;}
+% Blocks.
+\node[block, AC] (step1) at (0,0) {};
+\node[block, AW] (step2) at ($(step1.east)+(0.5cm,0)$) {};
+\node[block, AW] (step3) at ($(step2.east)+(0.5cm,0)$) {};
+\node[block, AW] (step4) at ($(step3.east)+(0.5cm,0)$) {};
+% Labels.
+\node[label, AN] at (step1.south) {\textbf{Step 1}\\Guess deviation\\bound};
+\node[label, AN] at (step2.south) {\textbf{Step 2}\\Statistically verify\\deviation bound};
+\node[label, AN] at (step3.south) {\textbf{Step 3}\\Refine deviation\\bound};
+\node[label, AN] at (step4.south) {\textbf{Step 4}\\Statistically verify\\new bound};
+% Arrows.
+\draw[line0, ->] (step1) -- (step2);
+\draw[line0, ->] (step2) -- (step3);
+\draw[line0, ->] (step3) -- (step4);
+
+% ==============================================================
+% STEP 1
+\begin{scope}[shift={($(step1.west)+(0.1cm,0)$)}]
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!10, minimum width=2.5cm, minimum height=1.1cm] (bound) at (0,0) {};
+\draw[green!50!black] (0, 0) -- (2.5, 0);
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, 0.2)
+    (1*\step, 0.45)
+    (2*\step, 0.4)
+    (3*\step, 0.1)
+    (4*\step, 0.4)
+    (5*\step, 0.2)
+    (6*\step, 0.1)
+};
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, -0.2)
+    (1*\step, -0.4)
+    (2*\step, -0.5)
+    (3*\step, -0.3)
+    (4*\step, -0.2)
+    (5*\step, -0.1)
+    (6*\step, -0.2)
+};
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, 0.1)
+    (1*\step, 0.4)
+    (2*\step, 0.2)
+    (3*\step, 0.6)
+    (4*\step, 0.65)
+    (5*\step, 0.4)
+    (6*\step, 0.1)
+};
+\draw[<-] (1*\step, +0.6) -- ($(bound.north)+(0,0.4cm)$);
+\draw[<-] (1*\step, -0.6) -- ($(bound.north)+(0,0.4cm)$);
+\node[AS] at ($(bound.north)+(0,0.5cm)$) {\scriptsize Guessed bounds};
+\end{scope}
+
+% ==============================================================
+% STEP 2
+\begin{scope}[shift={($(step2.west)+(0.1cm,0)$)}]
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!10, minimum width=2.5cm, minimum height=1.1cm] (bound) at (0,0) {};
+\draw[green!50!black] (0, 0) -- (2.5, 0);
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, 0.2)
+    (1*\step, 0.45)
+    (2*\step, 0.4)
+    (3*\step, 0.1)
+    (4*\step, 0.4)
+    (5*\step, 0.2)
+    (6*\step, 0.1)
+};
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, -0.2)
+    (1*\step, -0.4)
+    (2*\step, -0.5)
+    (3*\step, -0.3)
+    (4*\step, -0.2)
+    (5*\step, -0.1)
+    (6*\step, -0.2)
+};
+\draw [dashed, thick, red] plot [smooth] coordinates {
+    (0*\step, 0.1)
+    (1*\step, 0.4)
+    (2*\step, 0.2)
+    (3*\step, 0.6)
+    (4*\step, 0.65)
+    (5*\step, 0.4)
+    (6*\step, 0.1)
+};
+\draw[<-] (4*\step, 0.7) --++(0, 0.25);
+\node[AS] at ($(bound.north)+(0,0.45cm)$) {
+    \color{red}\scriptsize Trajectory violates bound};
+\end{scope}
+
+% ==============================================================
+% STEP 3
+\begin{scope}[shift={($(step3.west)+(0.1cm,0)$)}]
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!50, minimum width=2.5cm, minimum height=1.4cm] at (0,0) {};
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!10, minimum width=2.5cm, minimum height=1.1cm] (bound) at (0,0) {};
+\draw[green!50!black] (0, 0) -- (2.5, 0);
+\draw[<-] (1*\step, +0.7) -- ($(bound.north)+(0,0.4cm)$);
+\draw[<-] (1*\step, -0.6) -- ($(bound.north)+(0,0.4cm)$);
+\node[AS] at ($(bound.north)+(0,0.5cm)$) {\scriptsize Extended bounds};
+\end{scope}
+
+% ==============================================================
+% STEP 4
+\begin{scope}[shift={($(step4.west)+(0.1cm,0)$)}]
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!50, minimum width=2.5cm, minimum height=1.4cm] at (0,0) {};
+\node[AW, outer sep=0pt, inner sep=0pt, fill=blue!10, minimum width=2.5cm, minimum height=1.1cm] at (0,0) {};
+\draw[green!50!black] (0, 0) -- (2.5, 0);
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, 0.2)
+    (1*\step, 0.45)
+    (2*\step, 0.4)
+    (3*\step, 0.1)
+    (4*\step, 0.4)
+    (5*\step, 0.2)
+    (6*\step, 0.1)
+};
+\draw [dashed] plot [smooth] coordinates {
+    (0*\step, -0.2)
+    (1*\step, -0.4)
+    (2*\step, -0.5)
+    (3*\step, -0.3)
+    (4*\step, -0.2)
+    (5*\step, -0.1)
+    (6*\step, -0.2)
+};
+\draw [dashed, thick] plot [smooth] coordinates {
+    (0*\step, 0.1)
+    (1*\step, 0.4)
+    (2*\step, 0.2)
+    (3*\step, 0.6)
+    (4*\step, 0.65)
+    (5*\step, 0.4)
+    (6*\step, 0.1)
+};
+\end{scope}
+\end{tikzpicture}%

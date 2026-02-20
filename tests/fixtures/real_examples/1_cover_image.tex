@@ -1,0 +1,120 @@
+\begin{tikzpicture}[
+    every node/.append style={
+        align = center,
+        font=\sffamily,
+        outer sep=1pt,
+        inner sep=1pt,
+        minimum height=0.5cm
+    },
+    decision/.append style={
+        node0, diamond, aspect=2
+    },
+    block/.append style={
+        node0, rectangle, rounded corners=2pt
+    },
+    % Paper-specific defines.
+    node0/.append style={lblue, fgray},
+    line0/.append style={lblue, thick},
+    line1/.append style={lblue, thick, dashed},
+    label/.append style={font=\sffamily},
+    title/.append style={font=\sffamily\bfseries\color{blue!70!black}},
+    doc0/.append style={
+        draw,
+        thick,
+        align=center,
+        color=black,
+        fill=white,
+        shape=document,
+        inner sep=0pt,
+        minimum width = 2.25cm,
+        minimum height = 1.5cm
+    }
+]
+\node[block, minimum width = 3.5cm, minimum height = 1cm] (sysN) at (0.5cm, 0.5cm) {
+    System N\\
+    \textit{Model}+\textit{Controller}
+};
+\node[block, minimum width = 3.5cm, minimum height = 1cm] (sys2) at (0.25cm, 0.25cm) {
+    System 2\\
+    \textit{Model}+\textit{Controller}
+};
+\node[block, minimum width = 3.5cm, minimum height = 1cm] (sys1) at (0,0) {
+    System 1\\
+    \textit{Model}+\textit{Controller}
+};
+
+\node[block, AW, minimum width = 2cm, minimum height = 1cm] (est) 
+    at ($(sys1.east)+(1cm,0)$){
+    Deviation\\
+    Estimation
+};
+
+\node[block, AW, minimum width = 3.5cm, minimum height = 1cm] (compare) 
+    at ($(est.east)+(1cm,0)$){
+    Compare deviation\\
+    with safety margins
+};
+
+\node[AS] (margin) at ($(compare.north)+(0,0.25cm)$) {
+    Safety margins\\
+    $(\safedev)$
+};
+
+\node[doc0, AW] at ($(compare.east)+(1.30cm,0.30cm)$){};
+\node[doc0, AW] at ($(compare.east)+(1.15cm,0.15cm)$){};
+\node[doc0, AW] (constr) at ($(compare.east)+(1cm,0)$){
+    Potentially Safe\\Constraints
+};
+
+\node[block, ANW, minimum width = 2cm, minimum height = 1cm] (synth) 
+    at ($(sys1.south west)+(0cm,-1.5cm)$){
+    Schedule\\
+    synthesis
+};
+
+\node[doc0, AW, minimum width = 1.5cm, minimum height = 1.25cm] (candidate)
+    at ($(synth.east)+(0.5cm, 0cm)$){
+    Candidate\\
+    schedule
+};
+
+\node[block, AW, minimum width = 2cm, minimum height = 1cm] (verif) 
+    at ($(candidate.east)+(0.5cm,0)$) {
+    Schedule\\
+    verification
+};
+
+\node[decision, AW] (check)
+    at ($(verif.east)+(0.5cm,0)$) {
+    Deviations inside\\
+    safety margins
+};
+
+\node[AW] (sched) at ($(check.east)+(1cm,0)$){
+    Deterministically\\
+    safe schedule
+};
+
+\draw[->] (sys1) -- (est);
+\draw[->] (margin) -- (compare);
+\draw[->] (est) -- (compare);
+\draw[->] (compare) -- (constr);
+\draw[->] (constr) |- ($(constr.south)!0.5!(synth.north)+(0,0.35cm)$) -| (synth);
+\draw[->] (synth) -- (candidate);
+\draw[->] (candidate) -- (verif);
+\draw[->] (verif) -- (check);
+\draw[->] (check) -- (sched) node[midway, above] {Yes};
+\draw[->] (check) |- ($(check.south)!0.5!(synth.south)-(0,0.5cm)$) node[above] (no) {No} -| ($(synth.south)+(0.25cm,0)$);
+
+% Box 1.
+\node[line1, inner sep=3pt, fit=(verif)(check)(no)] (verbox) {};
+\node[title, ASW, outer sep=0pt, inner sep=0pt] at (verbox.north west) {
+    Schedule verification
+};
+
+% Box 2.
+\node[line1, inner sep=3pt, fit=(est)(compare)(margin)] (synthbox) {};
+\node[title, ASW, outer sep=0pt, inner sep=0pt] at (synthbox.north west) {
+    Constraint synthesis
+};
+\end{tikzpicture}%

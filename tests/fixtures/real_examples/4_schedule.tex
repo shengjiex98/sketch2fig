@@ -1,0 +1,63 @@
+\begin{tikzpicture}[
+    every node/.append style={
+        align = center,
+        font=\sffamily\small,
+        outer sep=0pt,
+        inner sep=0pt,
+        minimum height=0.5cm
+    },
+    % Figure-specific.
+    axislabel/.append style={outer sep=2pt, inner sep=2pt},
+    sched/.append style={node0, ASW, minimum width=1cm, minimum height=0.5cm},
+]
+% Control sizing using these variables.
+\tikzmath{\step=1; \height=0.6;}
+% Draw the arrows.
+\draw[line0, ->] (0, 4*\height) -- (6.5*\step, 4*\height);
+\draw[line0, ->] (0, 3*\height) -- (6.5*\step, 3*\height);
+\draw[line0, ->] (0, 2*\height) -- (6.5*\step, 2*\height);
+\draw[line0, ->] (0, 1*\height) -- (6.5*\step, 1*\height);
+\draw[line0, ->] (0, 0*\height) -- (6.5*\step, 0*\height);
+% Write y-axis labels.
+\node[axislabel, AE] at (0, 4.5*\height) {RC Network};
+\node[axislabel, AE] at (0, 3.5*\height) {F1 Tenth Car};
+\node[axislabel, AE] at (0, 2.5*\height) {DC Motor};
+\node[axislabel, AE] at (0, 1.5*\height) {Car Suspension};
+\node[axislabel, AE] at (0, 0.5*\height) {Cruise Control};
+% Write x-axis labels.
+\node[axislabel, AN] at (0.5*\step,0) {1};
+\node[axislabel, AN] at (1.5*\step,0) {2};
+\node[axislabel, AN] at (2.5*\step,0) {3};
+\node[axislabel, AN] at (3.5*\step,0) {4};
+\node[axislabel, AN] at (4.5*\step,0) {5};
+\node[axislabel, AN] at (5.5*\step,0) {6};
+% Add schedule.
+%
+\tikzmath{\idx=0;}
+\node[sched] at (\idx*\step, 2*\height) {};
+\node[sched] at (\idx*\step, 4*\height) {};
+%
+\tikzmath{\idx=\idx + 1;}
+\node[sched] at (\idx*\step, 0*\height) {};
+\node[sched] at (\idx*\step, 1*\height) {};
+%
+\tikzmath{\idx=\idx + 1;}
+\node[sched] at (\idx*\step, 2*\height) {};
+\node[sched] at (\idx*\step, 3*\height) {};
+%
+\tikzmath{\idx=\idx + 1;}
+\node[sched] at (\idx*\step, 0*\height) {};
+\node[sched] at (\idx*\step, 4*\height) {};
+%
+\tikzmath{\idx=\idx + 1;}
+\node[sched] at (\idx*\step, 1*\height) {};
+\node[sched] at (\idx*\step, 2*\height) {};
+%
+\tikzmath{\idx=\idx + 1;}
+\node[sched] at (\idx*\step, 0*\height) {};
+\node[sched] at (\idx*\step, 3*\height) {};
+% 
+\draw[thick, decorate, decoration = {calligraphic brace}]
+    (0*\step, 5*\height) --  (6*\step, 5*\height)
+    node[midway, above] {Repeat};
+\end{tikzpicture}%

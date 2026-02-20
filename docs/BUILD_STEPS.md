@@ -128,11 +128,11 @@ Work through these steps in order. Each step builds on the previous one. Before 
 
 ## Step 6: Polish & Harder Tests
 
-**Goal:** Iterate on quality using the harder `deviation_bound` fixture and real-world examples.
+**Goal:** Iterate on quality using the harder `real_examples` fixture and real-world examples.
 
 **Tasks:**
 
-- Run on `tests/fixtures/deviation_bound/input.png` — this has curves, layered rectangles, color semantics. It WILL fail on first try. Use the failures to improve prompts.
+- Run on `tests/fixtures/real_examples/3_deviation.png` — this has curves, layered rectangles, color semantics. It WILL fail on first try. Use the failures to improve prompts.
 - Improve the generator prompt with TikZ patterns for common elements (smooth curves, layered fills, scope-based positioning).
 - Add `--verbose` flag that prints the plan, each iteration's score, and the evaluator's critique.
 - Create a few more test fixtures from real paper figures.

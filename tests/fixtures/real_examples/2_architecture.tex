@@ -1,0 +1,56 @@
+\begin{tikzpicture}[
+    every node/.append style={
+        align = center,
+        font=\sffamily\footnotesize
+    },
+    box/.style={on grid, node0, text width=3.75cm},
+    flow/.style={-stealth, thick},
+    outline/.style={draw, very thick, color=blue!30!black},
+    edgelabel/.style={font=\sffamily\scriptsize, below, align=center},
+    io/.style={inner sep=0.5mm},
+    pad/.store in=\pad, pad=2mm
+]
+% Hypothesizer
+\node[box] (h1) {Small number of random runs};
+\node[box, below=1cm of h1] (h2) {Compute $\devub$};
+\draw[flow] (h1) -- (h2);
+\node[line1, fit=(h1)(h2)] (hypothesizer) {};
+\node[title, ASW, outer sep=1pt, inner sep=0pt] at (hypothesizer.north west) {Hypothesizer};
+    
+% Verifier
+\node[box, text width=2cm, right=5cm of h1] (v1) {Formulate $H_0$ and~$H_1$ with~$\devub$};
+\node[box, text width=2cm, right=2.5cm of v1] (v2) {Generate $K$ random runs};
+\node[box, text width=4.5cm] (v3) at ($(v1)+(1.25cm, -1.5cm)$) {Hypothesis test};
+\node[box, diamond, aspect=2, inner sep=0, text width=1.5cm, below=1.5cm of v3] (v4) {Is $H_1$ accepted?};
+\draw[flow] (v1) -| (v3);
+\draw[flow] (v2) -| (v3);
+\draw[flow] (v3) -- (v4);
+\node[line1, fit=(v1)(v2)(v3)(v4)] (verifier) {};
+\node[title, ASW, outer sep=1pt, inner sep=0pt] at (verifier.north west) {Verifier};
+    
+% Refiner
+\node[box, left=6.25cm of v4] (r1) {Refine $\devub$};
+\node[line1, fit=(r1)] (refiner) {};
+\node[title, ASW, outer sep=1pt, inner sep=0pt] at (refiner.north west) {Refiner};
+    
+% Input and output
+\node[io] (input) at (3cm, 1.5cm) {$\fsm, x[0], \tnom$};
+\node[io, anchor=west] (output) at ($(2mm,0)+(\pad,0)+(v3.south east)!(v4.east)!(v3.east)$) {$\devub$};
+    
+% Utility coordinates
+\coordinate[right=1.5cm of h2] (h2e);
+\coordinate[above=4mm of r1] (r1n);
+\coordinate[below=2mm of input] (inputs);
+    
+% Inter-region edges
+\draw[flow] (input) -- (inputs)
+            (inputs) -| ($(h1.north)+(0, \pad)$);
+\draw[flow] (input) -- (inputs)
+            (inputs) -| ($(v1.north)+(1.25cm, \pad)$);
+\draw[flow] (h2) -- (h2e) node[edgelabel, pos=0.6, text width=0.7cm, above=-1mm] {Initial guess}
+            (h2e) |- (v1);
+\draw[flow] (v4) -- ($(r1.east)+(\pad, 0)$) node[edgelabel, pos=0] {No} node[edgelabel, above=-1mm, pos=0.7, text width=1cm] {Counter-example};
+\draw[flow] (v4) -- (output) node[edgelabel, pos=0] {Yes};
+\draw[flow, -] (r1) -- (r1n)
+               (r1n) -| (h2e) node[edgelabel, near start, above=-1mm] {Refined $\mathstrut\devub$};
+\end{tikzpicture}
