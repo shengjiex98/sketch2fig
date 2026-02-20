@@ -64,7 +64,9 @@
 This is the heart of the project — what makes it more than "call GPT-4 and hope for the best."
 
 ### Phase 1: Analysis & Planning
+
 The agent examines the input image and produces a structured plan:
+
 - **Element identification:** What shapes, arrows, text labels, groupings exist?
 - **Layout analysis:** Grid structure? Linear flow? Hierarchical?
 - **Aesthetic assessment:** Are items intended to be aligned but slightly off? Are spacings meant to be uniform? Is there a color scheme?
@@ -72,17 +74,21 @@ The agent examines the input image and produces a structured plan:
 - **Fidelity decision:** Ask user — faithful reproduction, or "clean up" the aesthetics?
 
 ### Phase 2: Code Generation
+
 Generate TikZ (or SVG) code based on the plan:
+
 - Use style templates for consistent, publication-quality aesthetics
 - Apply a preamble with well-defined styles (colors, line widths, fonts)
 - Structure the code with scopes and relative positioning for maintainability
 
 ### Phase 3: Compile & Render
+
 - Compile TikZ → PDF → PNG using `pdflatex` + `convert`/`pdftoppm`
 - Capture and parse compilation errors
 - If compilation fails, feed errors back to the generation agent
 
 ### Phase 4: Visual Evaluation
+
 - Send BOTH the original input image AND the rendered output to the VLM
 - Ask it to evaluate:
   - **Structural fidelity:** Are all elements present? Correct connectivity?
@@ -91,6 +97,7 @@ Generate TikZ (or SVG) code based on the plan:
 - Produce a structured score + specific critique
 
 ### Phase 5: Iterative Refinement
+
 - If evaluation score < threshold OR specific issues identified:
   - Feed the critique + current code back to the generation agent
   - Agent produces a *targeted edit* (not full regeneration)
@@ -165,6 +172,7 @@ sketch2fig/
 ### Week 1: Core Pipeline (Working End-to-End)
 
 **Days 1–2: Foundation**
+
 - [ ] Set up project with `uv`, install dependencies
 - [ ] Implement LLM provider abstraction (`base.py`, `anthropic.py`)
 - [ ] Implement TikZ compiler tool (`compiler.py`):
@@ -173,6 +181,7 @@ sketch2fig/
 - [ ] Test: compile the example TikZ code from your paper
 
 **Days 3–4: Single-Shot Generation**
+
 - [ ] Write planning prompt — structured output (JSON) describing figure elements
 - [ ] Write generation prompt — produces TikZ code from plan + image
 - [ ] Implement `planner.py` and `generator.py`
@@ -180,6 +189,7 @@ sketch2fig/
 - [ ] Create default TikZ preamble with clean styles
 
 **Days 5–7: The Agentic Loop**
+
 - [ ] Implement `evaluator.py` — sends input + output images to VLM for comparison
 - [ ] Implement `orchestrator.py` — the full plan → generate → compile → evaluate → refine loop
 - [ ] Handle compilation failures (parse LaTeX errors, feed back to LLM)
@@ -190,18 +200,21 @@ sketch2fig/
 ### Week 2: Polish & Differentiation
 
 **Days 8–9: Aesthetic Intelligence**
+
 - [ ] Implement alignment/symmetry detection in the planner
 - [ ] Add "clean up" vs "faithful" mode toggle
 - [ ] Create style templates (distill-inspired, minimal, academic)
 - [ ] Add color palette extraction from input images
 
 **Days 10–11: Multi-Provider & Robustness**
+
 - [ ] Add OpenAI provider (`openai.py`)
 - [ ] Test with different model providers — compare quality
 - [ ] Add retry logic, rate limiting, cost tracking
 - [ ] Handle edge cases: very complex figures, text-heavy diagrams
 
 **Days 12–14: Demo & Documentation**
+
 - [ ] Create 5–8 compelling example conversions (before/after)
 - [ ] Write README with GIF/video demos
 - [ ] Add `--verbose` mode showing the agent's reasoning at each step
@@ -213,6 +226,7 @@ sketch2fig/
 ## Key Design Decisions
 
 ### 1. Structured Intermediate Representation
+
 Between the planner and generator, use a structured JSON IR:
 
 ```json
@@ -246,18 +260,22 @@ Between the planner and generator, use a structured JSON IR:
 ```
 
 This IR serves multiple purposes:
+
 - Makes the planner's reasoning inspectable
 - Allows the evaluator to check structural completeness
 - Could be used to generate SVG as well as TikZ
 - Makes refinement more targeted ("fix element step3's shading")
 
 ### 2. Prompt Engineering Strategy
+
 Each prompt should be specialized and include:
+
 - **Few-shot examples** of good TikZ patterns for common figure types
 - **Style guidelines** baked in (consistent colors, font sizes, spacing)
 - **Negative examples** showing common failure modes to avoid
 
 ### 3. Evaluation Rubric
+
 The evaluator uses a structured rubric (not just "does it look right?"):
 
 | Criterion       | Weight | Description                                     |
@@ -269,6 +287,7 @@ The evaluator uses a structured rubric (not just "does it look right?"):
 | Compilability   | 10%    | Code compiles without errors                    |
 
 ### 4. Error Recovery Taxonomy
+
 Different failure modes require different recovery strategies:
 
 | Failure Type           | Detection               | Recovery Strategy                  |
@@ -289,7 +308,7 @@ Different failure modes require different recovery strategies:
 | Language           | Python 3.12+                        | Your preference, ML ecosystem     |
 | Package manager    | uv                                  | Your preference                   |
 | CLI framework      | Typer                               | Clean CLI with type hints         |
-| LLM (primary)      | Claude claude-sonnet-4-20250514 via API | Best vision + code gen balance    |
+| LLM (primary)      | Claude claude-sonnet-4-6 via API    | Best vision + code gen balance    |
 | LLM (secondary)    | GPT-4o via API                      | Comparison / fallback             |
 | LaTeX compiler     | pdflatex (TeX Live)                 | Standard, widely available        |
 | PDF → Image        | pdftoppm (poppler-utils)            | Fast, reliable                    |

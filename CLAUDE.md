@@ -59,6 +59,7 @@ Tests have 3 tiers. Always run Tier 1 during development. Run Tier 2 before comm
 
 Read these BEFORE starting work on the corresponding task:
 
+- **`docs/BUILD_STEPS.md`** — Step-by-step build guide. Read the next incomplete step before starting work.
 - `docs/SETUP.md` — First-time project setup (run once)
 - `docs/COMPILER.md` — TikZ compilation pipeline details
 - `docs/PROMPTS.md` — Prompt engineering guidelines and templates
