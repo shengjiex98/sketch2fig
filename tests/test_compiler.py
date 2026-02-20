@@ -3,7 +3,12 @@
 import pytest
 from pathlib import Path
 
-from sketch2fig.compiler import wrap_in_document, parse_errors, compile_tikz, render_to_image
+from sketch2fig.compiler import (
+    wrap_in_document,
+    parse_errors,
+    compile_tikz,
+    render_to_image,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -12,6 +17,7 @@ _BAD_TIKZ = r"\begin{tikzpicture}\badcommand{foo}\end{tikzpicture}"
 
 
 # ── Tier 1: fast, no LaTeX required ──────────────────────────────────────────
+
 
 class TestWrapInDocument:
     def test_contains_documentclass(self):
@@ -43,19 +49,14 @@ class TestWrapInDocument:
 class TestParseErrors:
     def test_extracts_line_number(self):
         log = (
-            "! Undefined control sequence.\n"
-            "l.42 \\badcommand\n"
-            "                {foo}\n"
+            "! Undefined control sequence.\nl.42 \\badcommand\n                {foo}\n"
         )
         errors = parse_errors(log)
         assert len(errors) >= 1
         assert errors[0].line == 42
 
     def test_extracts_message(self):
-        log = (
-            "! Undefined control sequence.\n"
-            "l.42 \\badcommand\n"
-        )
+        log = "! Undefined control sequence.\nl.42 \\badcommand\n"
         errors = parse_errors(log)
         assert "Undefined control sequence" in errors[0].message
 
@@ -65,21 +66,13 @@ class TestParseErrors:
         assert errors == []
 
     def test_missing_dollar_error(self):
-        log = (
-            "! Missing $ inserted.\n"
-            "l.10 \\alpha\n"
-        )
+        log = "! Missing $ inserted.\nl.10 \\alpha\n"
         errors = parse_errors(log)
         assert errors[0].line == 10
         assert "Missing $ inserted" in errors[0].message
 
     def test_only_first_error_returned(self):
-        log = (
-            "! First error.\n"
-            "l.5 \\foo\n"
-            "! Second error.\n"
-            "l.10 \\bar\n"
-        )
+        log = "! First error.\nl.5 \\foo\n! Second error.\nl.10 \\bar\n"
         errors = parse_errors(log)
         assert len(errors) == 1
         assert "First error" in errors[0].message
@@ -92,6 +85,7 @@ class TestParseErrors:
 
 
 # ── Tier 2: slow, requires LaTeX ─────────────────────────────────────────────
+
 
 @pytest.mark.slow
 def test_simple_tikz_compiles():

@@ -190,3 +190,37 @@ Here is the evaluator critique listing specific issues to fix:
 
 Make targeted edits to fix these issues. Do not rewrite the code from scratch. \
 Return the updated \\begin{{tikzpicture}}...\\end{{tikzpicture}} block in a ```latex code fence."""
+
+
+# ---------------------------------------------------------------------------
+# Compile-error fixer
+# ---------------------------------------------------------------------------
+
+COMPILE_FIX_SYSTEM = """\
+You are an expert TikZ programmer. The TikZ code below failed to compile with pdflatex. \
+Fix the error with the minimal change necessary.
+
+Rules:
+- Make ONLY the change needed to fix the compilation error.
+- Do not improve or restructure unrelated code.
+- Output ONLY the fixed \\begin{tikzpicture}...\\end{tikzpicture} block in a \
+```latex code fence."""
+
+
+def compile_fix_user(tikz_code: str, error_summary: str) -> str:
+    """Return the compile-fix user message."""
+    return f"""\
+The following TikZ code failed to compile:
+
+<code>
+{tikz_code}
+</code>
+
+The pdflatex error:
+
+<error>
+{error_summary}
+</error>
+
+Fix the compilation error and return the corrected \
+\\begin{{tikzpicture}}...\\end{{tikzpicture}} block in a ```latex code fence."""
