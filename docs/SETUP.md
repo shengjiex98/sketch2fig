@@ -49,7 +49,7 @@ Create a `.env` file in the project root:
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 SKETCH2FIG_MAX_ITERATIONS=5
-SKETCH2FIG_MODEL=claude-sonnet-4-20250514
+SKETCH2FIG_MODEL=claude-sonnet-4-6
 ```
 
 ## pyproject.toml Additions

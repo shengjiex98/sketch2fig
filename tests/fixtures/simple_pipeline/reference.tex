@@ -1,0 +1,39 @@
+% Reference TikZ for pipeline diagram test fixture
+% This is a simplified version of the deviation-bound figure
+\begin{tikzpicture}[
+    every node/.append style={
+        align=center,
+        font=\sffamily\footnotesize,
+    },
+    block/.style={
+        draw=blue!40!black,
+        fill=blue!5,
+        rounded corners=3pt,
+        minimum width=2.5cm,
+        minimum height=1.5cm,
+        thick,
+    },
+    arrow/.style={
+        ->,
+        >=Stealth,
+        thick,
+        draw=blue!40!black,
+    },
+    label/.style={
+        font=\sffamily\footnotesize\color{blue!60!black},
+    },
+]
+% Blocks
+\node[block] (s1) {Step 1};
+\node[block, right=0.5cm of s1] (s2) {Step 2};
+\node[block, right=0.5cm of s2] (s3) {Step 3};
+
+% Arrows
+\draw[arrow] (s1) -- (s2);
+\draw[arrow] (s2) -- (s3);
+
+% Labels
+\node[label, below=2pt of s1] {First stage};
+\node[label, below=2pt of s2] {Second stage};
+\node[label, below=2pt of s3] {Third stage};
+\end{tikzpicture}
