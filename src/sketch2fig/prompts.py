@@ -66,24 +66,60 @@ produce TikZ code that recreates the figure as accurately as possible.
 Rules:
 - Output ONLY the \\begin{tikzpicture}...\\end{tikzpicture} block, nothing else.
 - No \\documentclass, \\usepackage, or preamble — only the tikzpicture environment.
-- Use relative positioning (right=of, below=of) over absolute coordinates when possible.
-- Define styles at the top of the tikzpicture with \\tikzset{} or as tikzpicture options.
-- Use \\def or \\pgfmathsetmacro for repeated dimensions.
-- Keep labels as \\node with proper anchoring.
-- Group related elements in \\begin{scope}...\\end{scope} when logical.
+- Define ALL styles inside the tikzpicture (\\tikzset{} or as tikzpicture options).
+- Use only standard TikZ anchor names (north, south, east, west, center, north west, etc.).
+- Do NOT use tikz-cd or any macros from external paper preambles.
+- Use relative positioning (right=of, below=of) when possible; use calc for precise offsets.
+- Use \\tikzmath{\\varname=value;} to define repeated numeric constants cleanly.
 - Wrap your output in a ```latex code fence.
+
+Techniques for complex figures:
+
+Layered shaded regions (draw outer fill first, then inner fill on top, then border last):
+  \\node[fill=blue!50, minimum width=3cm, minimum height=1.6cm] at (0,0) {};  % outer band
+  \\node[fill=blue!10, minimum width=3cm, minimum height=1.1cm] at (0,0) {};  % inner region
+  \\draw[rounded corners, thick] (-1.5,-0.85) rectangle (1.5,0.85);           % border on top
+
+Smooth curves (use plot[smooth] for natural-looking data lines):
+  \\draw[dashed] plot[smooth, tension=0.6] coordinates {(0,0.2) (0.4,0.45) (0.8,0.1) (1.2,0.5)};
+
+Scoped subsections (shift into a panel's interior, then draw in local coordinates):
+  \\begin{scope}[shift={($(step1.west)+(0.1cm,0)$)}]
+    \\node[fill=blue!10, minimum width=2.5cm, minimum height=1.1cm] at (0,0) {};
+    \\draw[green!60!black] (0,0) -- (2.5,0);                                    % baseline
+    \\draw[dashed] plot[smooth] coordinates {(0,0.2) (0.4,0.4) (0.8,0.1)};
+  \\end{scope}
+
+Calc-based positioning:
+  \\node[box] (b) at ($(a.east)+(0.5cm,0)$) {Label};     % offset from a specific anchor
+  \\coordinate (mid) at ($(a)!0.5!(b)$);                  % midpoint between two nodes
+
+L-shaped paths for corner routing:
+  \\draw[->] (a) -| (b);   % go horizontal first, then vertical
+  \\draw[->] (a) |- (b);   % go vertical first, then horizontal
+
+Fit node (auto-sized bounding box around a group):
+  \\node[draw, thick, fit=(a)(b)(c), inner sep=4pt] (group) {};
+  \\node[anchor=north west, font=\\sffamily\\scriptsize] at (group.north west) {Label};
+
+Color-coded regions (fill semantically distinct areas before stroking borders):
+  \\fill[red!20] (0,0) rectangle (3,1.5);
+  \\fill[blue!15] (3,0) rectangle (6,1.5);
+  \\draw[thick] (0,0) rectangle (6,1.5);
 
 Example of good style:
 ```latex
 \\begin{tikzpicture}[
-  box/.style={draw, rounded corners, minimum width=2cm, minimum height=0.8cm},
-  >=latex
+  block/.style={draw, rounded corners=2pt, minimum width=2.7cm, minimum height=1.7cm, thick},
+  >=Stealth,
+  every node/.append style={align=center, font=\\sffamily\\footnotesize}
 ]
-  \\node[box] (a) {Input};
-  \\node[box, right=1.5cm of a] (b) {Process};
-  \\node[box, right=1.5cm of b] (c) {Output};
-  \\draw[->] (a) -- (b);
-  \\draw[->] (b) -- (c);
+  \\tikzmath{\\gap=0.5;}
+  \\node[block] (s1) at (0,0) {};
+  \\node[block] (s2) at ($(s1.east)+(\\gap cm,0)$) {};
+  \\draw[->] (s1) -- (s2);
+  \\node[below=2pt of s1] {\\textbf{Step 1}\\\\Description};
+  \\node[below=2pt of s2] {\\textbf{Step 2}\\\\Description};
 \\end{tikzpicture}
 ```"""
 

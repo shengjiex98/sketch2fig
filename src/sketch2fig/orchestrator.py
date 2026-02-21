@@ -1,6 +1,7 @@
 """Main agentic loop: Plan → Generate → Compile → Evaluate → Refine."""
 
 import logging
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -61,6 +62,15 @@ def convert(
     # Step 1: Plan
     logger.info("=== Planning ===")
     plan = plan_figure(input_image, clean=clean)
+    logger.info(
+        "Plan: %s | %s | %d element(s) | %d connection(s)",
+        plan.get("figure_type", "?"),
+        plan.get("layout", "?"),
+        len(plan.get("elements", [])),
+        len(plan.get("connections", [])),
+    )
+    if plan.get("aesthetic_notes"):
+        logger.info("Aesthetic notes: %s", plan["aesthetic_notes"])
 
     # Step 2: Initial generation
     logger.info("=== Generating ===")
@@ -120,7 +130,12 @@ def convert(
             break
 
         # Step 5: Refine for next iteration
-        logger.info("=== Refining ===")
+        major = [i for i in last_result.issues if i.get("severity") == "major"]
+        minor = [i for i in last_result.issues if i.get("severity") == "minor"]
+        logger.info(
+            "=== Refining: %d major, %d minor issue(s) ===",
+            len(major), len(minor),
+        )
         tikz = refine_tikz(tikz, last_result, input_image)
 
     if last_rendered is None:
@@ -130,7 +145,6 @@ def convert(
     final_tex = output_dir / "final.tex"
     final_png = output_dir / "final.png"
     final_tex.write_text(last_tex, encoding="utf-8")
-    import shutil
     shutil.copy2(last_rendered, final_png)
 
     return ConvertResult(
