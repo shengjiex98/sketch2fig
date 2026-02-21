@@ -18,8 +18,10 @@ def _main() -> None:
 
 
 def _setup_logging(verbose: bool) -> None:
-    level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=level, format="%(levelname)s: %(message)s")
+    # Root handler at WARNING so third-party libs (httpx, PIL, anthropic) stay quiet.
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
+    # Our own loggers get INFO normally, DEBUG with -v.
+    logging.getLogger("sketch2fig").setLevel(logging.DEBUG if verbose else logging.INFO)
 
 
 @app.command()
