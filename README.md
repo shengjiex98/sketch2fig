@@ -99,19 +99,31 @@ Done in 2 iteration(s) — score: 8.45 — PASS
 
 ## Examples
 
-The `tests/fixtures/real_examples/` directory contains four figures from published papers along with their reference TikZ implementations:
+All four test figures come from published research papers. Results from running `sketch2fig convert` on each:
 
-| File | Description |
-|------|-------------|
-| `1_cover_image.png` | Cover figure with layered components |
-| `2_architecture.png` | System architecture with fit-boxes and routing |
-| `3_deviation.png` | Pipeline with scoped panels, smooth curves, layered shading |
-| `4_schedule.png` | Timeline / schedule diagram |
+| Figure | Iterations | Score | Result |
+|--------|-----------|-------|--------|
+| `4_schedule.png` — Gantt-style scheduling diagram | 1 | 8.90 | ✅ PASS |
+| `3_deviation.png` — Pipeline with curves and layered shading | 5 | 8.00 | near-pass |
+| `2_architecture.png` — System architecture with feedback loops | 5 | 7.60 | partial |
+| `1_cover_image.png` — Two-row pipeline with dashed grouping boxes | 5 | 7.30 | partial |
 
-Run on one of these to see the full loop in action:
+### Schedule diagram (PASS on first try)
+
+| Input | Output (iter 1) |
+|-------|----------------|
+| ![](docs/eval_images/4_schedule_input.png) | ![](docs/eval_images/4_schedule_output.png) |
+
+### Deviation bound pipeline (5 iterations)
+
+| Input | Iteration 1 | Final |
+|-------|------------|-------|
+| ![](docs/eval_images/3_deviation_input.png) | ![](docs/eval_images/3_deviation_iter1.png) | ![](docs/eval_images/3_deviation_output.png) |
+
+Run on one of these to see the full loop:
 
 ```bash
-uv run sketch2fig convert tests/fixtures/real_examples/3_deviation.png --verbose
+uv run sketch2fig convert tests/fixtures/real_examples/4_schedule.png --verbose
 ```
 
 ## Testing
