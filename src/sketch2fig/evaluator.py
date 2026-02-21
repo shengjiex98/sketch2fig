@@ -3,6 +3,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
+from json import JSONDecodeError
 from pathlib import Path
 
 from .config import call_claude, strip_json_fences
@@ -47,13 +48,22 @@ def evaluate(input_image: Path, rendered_image: Path) -> EvalResult:
         EvalResult with scores, issues, and pass/fail verdict.
     """
     logger.info("Evaluating: %s vs %s", input_image.name, rendered_image.name)
-    response = call_claude(
-        system=EVALUATOR_SYSTEM,
-        user_text=EVALUATOR_USER,
-        image_paths=[input_image, rendered_image],
-        response_format="json",
-    )
-    data = json.loads(strip_json_fences(response))
+    for attempt in range(2):
+        response = call_claude(
+            system=EVALUATOR_SYSTEM,
+            user_text=EVALUATOR_USER,
+            image_paths=[input_image, rendered_image],
+            response_format="json",
+        )
+        try:
+            data = json.loads(strip_json_fences(response))
+            break
+        except JSONDecodeError:
+            if attempt == 0:
+                logger.warning("Evaluator returned non-JSON on attempt 1; retrying...")
+            else:
+                logger.warning("Evaluator failed twice; scoring as 0. Response: %.200s", response)
+                return EvalResult(scores={}, issues=[], passed=False, overall=0.0)
 
     scores: dict[str, float] = data.get("scores", {})
     issues: list[dict] = data.get("issues", [])

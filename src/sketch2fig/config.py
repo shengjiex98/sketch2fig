@@ -3,6 +3,7 @@
 import base64
 import logging
 import re
+import time
 from pathlib import Path
 
 import anthropic
@@ -54,11 +55,16 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
+_MAX_RETRIES = 3
+_RETRY_BASE_WAIT = 30  # seconds
+
+
 def call_claude(
     system: str,
     user_text: str,
     image_paths: list[Path] | None = None,
     response_format: str = "json",
+    max_tokens: int = 8192,
 ) -> str:
     """Call Claude with optional images and return the text response.
 
@@ -67,6 +73,7 @@ def call_claude(
         user_text: User message text.
         image_paths: Optional list of image files to include before the text.
         response_format: "json" appends a reminder to return raw JSON; "text" leaves as-is.
+        max_tokens: Maximum output tokens (default 8192 to avoid truncation).
 
     Returns:
         Raw text from Claude's first content block.
@@ -86,18 +93,27 @@ def call_claude(
         )
 
     if response_format == "json":
-        user_text = (
-            user_text + "\n\nRespond with valid JSON only — no markdown code fences."
-        )
+        user_text = user_text + "\n\nIMPORTANT: Respond with a raw JSON object only. Do not write any prose, analysis, or explanation. Your entire response must start with `{` and end with `}`."
 
     content.append(TextBlockParam(type="text", text=user_text))
 
-    message = client.messages.create(
-        model=settings.model,
-        max_tokens=4096,
-        system=system,
-        messages=[{"role": "user", "content": content}],
-    )
+    messages: list[dict] = [{"role": "user", "content": content}]
+
+    for attempt in range(_MAX_RETRIES):
+        try:
+            message = client.messages.create(
+                model=settings.model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=messages,
+            )
+            break
+        except anthropic.RateLimitError:
+            if attempt == _MAX_RETRIES - 1:
+                raise
+            wait = _RETRY_BASE_WAIT * (2 ** attempt)
+            logger.warning("Rate limited; retrying in %ds (attempt %d/%d)...", wait, attempt + 1, _MAX_RETRIES)
+            time.sleep(wait)
 
     usage = message.usage
     logger.info(

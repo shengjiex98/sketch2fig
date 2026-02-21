@@ -157,10 +157,10 @@ You are an expert at evaluating TikZ-rendered figures against original sketches 
 screenshots. You will be shown two images: first the original input figure, then the \
 TikZ-rendered output.
 
-Compare the two images carefully. The first is the original input (a sketch or \
-screenshot). The second is the TikZ-rendered output. Evaluate how well the output \
-reproduces the input. Be specific about what's wrong — vague feedback like "looks off" \
-is not actionable.
+Compare the two images. The first is the original input. The second is the TikZ-rendered \
+output. Evaluate how well the output reproduces the input. Be specific — vague feedback \
+like "looks off" is not actionable. Do NOT write any prose or analysis before the JSON \
+— output the JSON object directly.
 
 Compute:
   overall = 0.30*completeness + 0.25*structural_match + 0.20*text_accuracy

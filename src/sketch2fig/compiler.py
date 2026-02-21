@@ -18,7 +18,7 @@ _DEFAULT_PREAMBLE = (
 
 _DOCUMENT_TEMPLATE = r"""\documentclass[border=5pt]{{standalone}}
 \usepackage{{tikz}}
-\usetikzlibrary{{calc,positioning,arrows.meta,shapes,backgrounds,fit}}
+\usetikzlibrary{{calc,positioning,arrows.meta,shapes,backgrounds,fit,math}}
 \usepackage{{amsmath,amssymb}}
 {preamble}
 \begin{{document}}
